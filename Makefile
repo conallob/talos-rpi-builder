@@ -4,7 +4,7 @@
 # ------------------------------------------------------------------------------
 
 # --- Versions ------------------------------------------------------------------
-TALOS_VERSION        ?= v1.13.0
+TALOS_VERSION        ?= v1.13.5
 ISCSI_TOOLS_VERSION  ?= v0.2.0
 UTIL_LINUX_VERSION   ?= 2.41.4
 NVME_CLI_VERSION     ?= v2.14
@@ -26,7 +26,7 @@ TTY_FLAG    := $(shell [ -t 0 ] && echo "-t" || echo "")
 EXTRA_KERNEL_ARGS ?=
 
 # --- GHCR publish config -------------------------------------------------------
-GHCR_ORG        ?= wheetazlab
+GHCR_ORG        ?= ${GITHUB_REPOSITORY_OWNER}
 GHCR_REPO       ?= talos-rpi-installer
 # INSTALLER_TAG lets CI override the destination image tag (e.g. v1.12.6-lite)
 # without changing TALOS_VERSION which must match the upstream installer-base tag.

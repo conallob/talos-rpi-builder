@@ -6,22 +6,27 @@ name: Build and Publish Talos CM4/CM5 Image
 #
 # Trigger:
 #   - workflow_dispatch (manual)
-#   - push of a tag matching v* (e.g. v1.13.0)
+#   - push of a tag matching v* (e.g. v1.13.5)
+#   - a GitHub Release being published (e.g. via scripts/release.sh) — in
+#     this case the built image is uploaded to that same release (not a
+#     fresh delete+recreate) to avoid the release job re-triggering itself.
 
 on:
   push:
     tags:
       - 'v*'
+  release:
+    types: [published]
   workflow_dispatch:
     inputs:
       talos_version:
-        description: 'Base Talos version (e.g. v1.13.0)'
+        description: 'Base Talos version (e.g. v1.13.5)'
         required: false
-        default: 'v1.13.0'
+        default: 'v1.13.5'
       installer_base:
-        description: 'RPi-kernel installer base produced by build-kernel.yml'
+        description: 'RPi-kernel installer base produced by build-kernel.yml (leave blank to use ghcr.io/<owner>/rpi-talos:v1.13.5-k-rpi)'
         required: false
-        default: 'ghcr.io/wheetazlab/rpi-talos:v1.13.0-k-rpi'
+        default: ''
       overlay_image:
         description: 'sbc-raspberrypi overlay image produced by build-overlay.yml (leave blank to use Makefile default)'
         required: false
@@ -47,8 +52,10 @@ env:
   EXTENSION_TAILSCALE_IMAGE: ghcr.io/siderolabs/tailscale:1.96.4
   # raspberrypi/linux rpi-6.18.y at the pinned linux_ref.
   RPI_LINUX_KERNEL_VERSION: 'raspberrypi/linux rpi-6.18.y @ 79dc190b12f9'
-  # Default installer base when triggered by tag push (no workflow_dispatch input).
-  RPI_INSTALLER_BASE_DEFAULT: 'ghcr.io/wheetazlab/rpi-talos:v1.13.0-k-rpi'
+  # Default installer base when no workflow_dispatch override is given — tracks
+  # this fork's own build-kernel.yml output (github.repository_owner keeps it
+  # portable across forks instead of hardcoding an upstream org).
+  RPI_INSTALLER_BASE_DEFAULT: 'ghcr.io/${{ github.repository_owner }}/rpi-talos:v1.13.5-k-rpi'
 
 jobs:
   # ── Resolve the Talos version once and share it across all jobs ─────────────
@@ -92,6 +99,8 @@ jobs:
           set -euo pipefail
           if [[ -n "${{ github.event.inputs.talos_version }}" ]]; then
             VERSION="${{ github.event.inputs.talos_version }}"
+          elif [[ "${{ github.event_name }}" == "release" ]]; then
+            VERSION="${{ github.event.release.tag_name }}"
           elif [[ "${{ github.ref_type }}" == "tag" ]]; then
             VERSION="${{ github.ref_name }}"
           else
@@ -393,10 +402,20 @@ jobs:
 
           EOF
           )
-          gh release delete ${{ env.RELEASE_TAG }} --yes 2>/dev/null || true
-          gh release create \
-            ${{ env.RELEASE_TAG }} \
-            ./_out/metal-arm64.raw.xz \
-            --title "${{ env.RELEASE_TAG }}" \
-            $([[ "${{ env.TALOS_VERSION }}" =~ -(alpha|beta|rc)\. ]] && echo "--prerelease") \
-            --notes "$NOTES"
+          if [[ "${{ github.event_name }}" == "release" ]]; then
+            # Triggered by an already-published release (e.g. scripts/release.sh) —
+            # upload the built asset to that same release instead of deleting and
+            # recreating it, which would just re-fire this same `release:published`
+            # trigger and loop forever. This also preserves any release
+            # title/notes the release was originally published with.
+            echo "==> Uploading asset to existing release ${{ env.RELEASE_TAG }}"
+            gh release upload ${{ env.RELEASE_TAG }} ./_out/metal-arm64.raw.xz --clobber
+          else
+            gh release delete ${{ env.RELEASE_TAG }} --yes 2>/dev/null || true
+            gh release create \
+              ${{ env.RELEASE_TAG }} \
+              ./_out/metal-arm64.raw.xz \
+              --title "${{ env.RELEASE_TAG }}" \
+              $([[ "${{ env.TALOS_VERSION }}" =~ -(alpha|beta|rc)\. ]] && echo "--prerelease") \
+              --notes "$NOTES"
+          fi

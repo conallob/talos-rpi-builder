@@ -72,12 +72,12 @@ Flash Raspberry Pi OS to an SD card, boot from it once (this automatically updat
 
 | Component             | Version / Image |
 |-----------------------|----------------|
-| Talos Linux           | `v1.13.0`      |
+| Talos Linux           | `v1.13.5`      |
 | Linux kernel          | `raspberrypi/linux` rpi-6.18.y @ `79dc190b12f9` (Pi vendor fork) |
-| SBC overlay           | `ghcr.io/wheetazlab/sbc-raspberrypi:pr88-cd5` (PR #88 + CM5 sdio1 broken-cd drop) |
+| SBC overlay           | `ghcr.io/conallob/sbc-raspberrypi:pr88-cd5` (PR #88 + CM5 sdio1 broken-cd drop) |
 | iscsi-tools extension | `v0.2.0`       |
 | util-linux-tools      | `2.41.4`       |
-| Installer base        | `ghcr.io/wheetazlab/rpi-talos:v1.13.0-k-rpi` (built by `build-kernel.yml`) |
+| Installer base        | `ghcr.io/conallob/rpi-talos:v1.13.5-k-rpi` (built by `build-kernel.yml`) |
 
 All versions are configurable — see [Customization](#customization).
 
@@ -95,6 +95,15 @@ All workflow files use `github.repository_owner` for all GHCR paths — they are
 > **Step 2 → `build-overlay.yml`** (custom sbc-raspberrypi overlay with DTB patches)
 > **Step 3 → `publish.yml`** (disk image + installer OCI + GitHub release)
 
+### Cutting a release
+
+All three workflows also trigger automatically when a **GitHub Release is published** (in addition to their existing `workflow_dispatch`/tag-push triggers), so publishing one release kicks off the full pipeline. Two ways to publish one:
+
+- **`./scripts/release.sh vX.Y.Z`** — creates the release (no assets) with real release notes of your choosing; CI then runs and `publish.yml` uploads `metal-arm64.raw.xz` to that same release (`gh release upload`, not a delete+recreate — this is what keeps the trigger from looping on itself). Use `--draft` to stage it and publish manually when ready (a draft does **not** fire the trigger).
+- **`git tag vX.Y.Z && git push --tags`** — the original path; still works unchanged, and still gets a generic auto-generated release body from `publish.yml`.
+
+Either way, `build-kernel.yml` and `build-overlay.yml` derive their version/SHA inputs from the release tag with the same defaults as a manual dispatch (see each workflow's header comment) — override by triggering them manually first if you need non-default `pkg_version`/`linux_ref`/`pr88_sha`/etc. before cutting the release.
+
 ### Step 1 — Build RPi-Kernel Installer Base (`build-kernel.yml`)
 
 Builds the custom installer-base OCI image that `publish.yml` consumes. Run this first whenever you bump Talos or the pinned Pi kernel SHA.
@@ -106,7 +115,7 @@ Builds the custom installer-base OCI image that `publish.yml` consumes. Run this
 4. Builds and pushes `ghcr.io/<owner>/kernel:<pkgs-tag>` using pkgs' native patch-and-build
 5. Clones `siderolabs/talos` at `talos_version` and applies the RPi modules-arm64 patch
 6. Builds and pushes `imager` + `installer-base` with `PKG_KERNEL=` pointing to the Pi-vendor kernel OCI
-7. `crane copy`s to `ghcr.io/<owner>/rpi-talos:<installer_tag>` (e.g. `v1.13.0-k-rpi`)
+7. `crane copy`s to `ghcr.io/<owner>/rpi-talos:<installer_tag>` (e.g. `v1.13.5-k-rpi`)
 
 **Trigger:** Actions → Build RPi-Kernel Installer Base → Run workflow
 
@@ -114,12 +123,12 @@ Builds the custom installer-base OCI image that `publish.yml` consumes. Run this
 
 | Input | Default | Description |
 |-------|---------|-------------|
-| `talos_version` | `v1.13.0` | Talos branch to build |
-| `pkg_version` | `v1.13.0` | `siderolabs/pkgs` ref (must match the vendored Pkgfile patch's base) |
+| `talos_version` | `v1.13.5` | Talos branch to build |
+| `pkg_version` | `v1.13.0` | `siderolabs/pkgs` ref (must match the vendored Pkgfile patch's base — pkgs is not tagged per Talos patch release, so this stays anchored at v1.13.0) |
 | `linux_ref` | `79dc190b12f9` | `raspberrypi/linux` short SHA — workflow asserts the vendored patch pins this same ref |
-| `installer_tag` | `v1.13.0-k-rpi` | Output image tag |
+| `installer_tag` | `v1.13.5-k-rpi` | Output image tag |
 
-Also triggers on push of a `v*-kernel` tag (e.g. `v1.13.0-kernel`).
+Also triggers on push of a `v*-kernel` tag (e.g. `v1.13.5-kernel`).
 
 **After running:** the summary tab shows the exact image ref. Set `CUSTOM_INSTALLER_BASE` in `publish.yml` (workflow_dispatch input) or leave it at the default to consume that image.
 
@@ -163,7 +172,7 @@ After running, update `CUSTOM_OVERLAY_IMAGE` in the Makefile to the new tag.
 Assembles the disk image and upgrade installer using the pre-built kernel and overlay from Steps 1 and 2. **Do not run this until both prior steps have completed successfully and `CUSTOM_INSTALLER_BASE` / `CUSTOM_OVERLAY_IMAGE` in the Makefile point to the correct tags.**
 
 **Triggers:**
-- Push a version tag (e.g. `git tag v1.13.0 && git push --tags`) → full build + publish
+- Push a version tag (e.g. `git tag v1.13.5 && git push --tags`) → full build + publish
 - Manual run via **Actions → Build and Publish → Run workflow**
 
 **Workflow dispatch inputs:**
@@ -281,10 +290,10 @@ make release      # GitHub release with .raw.xz artifact
 
 ```bash
 # Different Talos version
-make build TALOS_VERSION=v1.13.0
+make build TALOS_VERSION=v1.13.5
 
 # Override overlay image
-make build CUSTOM_OVERLAY_IMAGE=ghcr.io/wheetazlab/sbc-raspberrypi:pr88-cd5
+make build CUSTOM_OVERLAY_IMAGE=ghcr.io/conallob/sbc-raspberrypi:pr88-cd5
 
 # Extra kernel args
 make build EXTRA_KERNEL_ARGS='--extra-kernel-arg=cma=256M --extra-kernel-arg=hugepages=64'
@@ -322,8 +331,8 @@ make help           Show all targets and version variables
 
 ### What's in the image?
 
-- Talos Linux kernel + initramfs (arm64) — from `ghcr.io/wheetazlab/rpi-talos:v1.13.0-k-rpi` (`raspberrypi/linux` rpi-6.18.y vendor fork, built by `build-kernel.yml`)
-- **Patched U-Boot** (BCM2712/RP1) from `ghcr.io/wheetazlab/sbc-raspberrypi:pr88-cd5` (PR #88 patch set — NVMe/PCIe, EEE LPI, MACB driver)
+- Talos Linux kernel + initramfs (arm64) — from `ghcr.io/conallob/rpi-talos:v1.13.5-k-rpi` (`raspberrypi/linux` rpi-6.18.y vendor fork, built by `build-kernel.yml`)
+- **Patched U-Boot** (BCM2712/RP1) from `ghcr.io/conallob/sbc-raspberrypi:pr88-cd5` (PR #88 patch set — NVMe/PCIe, EEE LPI, MACB driver)
 - DTBs from custom `sbc-raspberrypi` overlay (`rpi_generic` installer):
   - `bcm2711-rpi-4-b.dtb` ← Pi 4 Model B
   - `bcm2711-rpi-cm4.dtb` ← CM4 (CM4IO and compatible carriers)
@@ -362,7 +371,7 @@ talosctl kubeconfig --nodes <CONTROLPLANE_IP> --talosconfig talosconfig
 To upgrade an existing node:
 
 ```bash
-talosctl upgrade --nodes <NODE_IP> --image ghcr.io/wheetazlab/talos-rpi-installer:v1.13.0
+talosctl upgrade --nodes <NODE_IP> --image ghcr.io/conallob/talos-rpi-installer:v1.13.5
 ```
 
 ---

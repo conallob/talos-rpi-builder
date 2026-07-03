@@ -57,6 +57,10 @@ on:
   release:
     types: [published]
 
+concurrency:
+  group: build-kernel-${{ github.event.release.tag_name || github.event.inputs.talos_version || github.ref_name }}
+  cancel-in-progress: false
+
 jobs:
   # ── Resolve versions + decide whether the kernel needs rebuilding ─────────
   resolve:

@@ -10,6 +10,13 @@ name: Build and Publish Talos CM4/CM5 Image
 #   - a GitHub Release being published (e.g. via scripts/release.sh) — in
 #     this case the built image is uploaded to that same release (not a
 #     fresh delete+recreate) to avoid the release job re-triggering itself.
+#
+# `gh release create <tag>` (what scripts/release.sh does) creates the git
+# tag as a side effect, which independently fires the `push: tags: v*`
+# trigger below IN ADDITION to `release: published` — both land within
+# seconds of each other for the same tag. The `concurrency:` group keys on
+# the resolved tag so the second run to start cancels the first instead of
+# both racing to build/publish the same version.
 
 on:
   push:
@@ -56,6 +63,10 @@ env:
   # this fork's own build-kernel.yml output (github.repository_owner keeps it
   # portable across forks instead of hardcoding an upstream org).
   RPI_INSTALLER_BASE_DEFAULT: 'ghcr.io/${{ github.repository_owner }}/rpi-talos:v1.13.5-k-rpi'
+
+concurrency:
+  group: publish-${{ github.event.release.tag_name || github.event.inputs.talos_version || github.ref_name }}
+  cancel-in-progress: true
 
 jobs:
   # ── Resolve the Talos version once and share it across all jobs ─────────────
@@ -182,6 +193,36 @@ jobs:
 
       - name: Log in to GHCR
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.repository_owner }}" --password-stdin
+
+      - name: Wait for installer-base and overlay images to be published
+        # On a release/tag trigger, build-kernel.yml and build-overlay.yml fire
+        # in parallel with this workflow (all three react to the same event,
+        # with no cross-workflow `needs:` between them) — the kernel build in
+        # particular can take a long time. Poll instead of failing immediately
+        # on a manifest-not-found so this run doesn't die on a race it can't
+        # control. A manual workflow_dispatch run against already-published
+        # images resolves on the first check and moves on immediately.
+        env:
+          INSTALLER_BASE: ${{ needs.resolve-version.outputs.installer_base }}
+          OVERLAY_IMAGE: ${{ needs.resolve-version.outputs.overlay_image }}
+        run: |
+          set -euo pipefail
+          TIMEOUT_SECS=3600
+          INTERVAL_SECS=30
+          for IMAGE in "${INSTALLER_BASE}" "${OVERLAY_IMAGE}"; do
+            echo "==> Waiting for ${IMAGE} to be published..."
+            ELAPSED=0
+            until crane manifest "${IMAGE}" >/dev/null 2>&1; do
+              if [[ ${ELAPSED} -ge ${TIMEOUT_SECS} ]]; then
+                echo "ERROR: timed out after ${TIMEOUT_SECS}s waiting for ${IMAGE}" >&2
+                echo "This usually means build-kernel.yml/build-overlay.yml haven't finished yet (or failed) — check Actions." >&2
+                exit 1
+              fi
+              sleep "${INTERVAL_SECS}"
+              ELAPSED=$((ELAPSED + INTERVAL_SECS))
+            done
+            echo "==> ${IMAGE} is available"
+          done
 
       - name: Install dependencies
         run: sudo apt-get install -y xz-utils

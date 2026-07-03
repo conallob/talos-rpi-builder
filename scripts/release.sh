@@ -60,14 +60,14 @@ fi
 REPO="$(gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null || true)"
 TARGET=""
 NOTES="Talos ${TAG} for Raspberry Pi CM4/CM5/Pi 4/Pi 5. Build artifacts are attached automatically by CI (build-kernel.yml -> build-overlay.yml -> publish.yml) once this release is published."
-DRAFT_FLAG=()
+DRAFT=false
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --repo) REPO="$2"; shift 2 ;;
     --target) TARGET="$2"; shift 2 ;;
     --notes) NOTES="$2"; shift 2 ;;
-    --draft) DRAFT_FLAG=(--draft); shift ;;
+    --draft) DRAFT=true; shift ;;
     *) echo "Unknown option: $1" >&2; exit 1 ;;
   esac
 done
@@ -83,20 +83,28 @@ echo "============================================================"
 echo " Repo    : ${REPO}"
 echo " Tag     : ${TAG}"
 echo " Target  : ${TARGET:-<default branch HEAD>}"
-echo " Draft   : $([[ ${#DRAFT_FLAG[@]} -gt 0 ]] && echo yes || echo no)"
+echo " Draft   : $([[ "$DRAFT" == true ]] && echo yes || echo no)"
 echo "============================================================"
 echo ""
 echo "==> Creating release ${TAG} (no assets — CI attaches them)"
 
-gh release create "${TAG}" \
-  --repo "${REPO}" \
-  ${TARGET:+--target "${TARGET}"} \
-  --title "${TAG}" \
-  --notes "${NOTES}" \
-  "${DRAFT_FLAG[@]}"
+if [[ "$DRAFT" == true ]]; then
+  gh release create "${TAG}" \
+    --repo "${REPO}" \
+    ${TARGET:+--target "${TARGET}"} \
+    --title "${TAG}" \
+    --notes "${NOTES}" \
+    --draft
+else
+  gh release create "${TAG}" \
+    --repo "${REPO}" \
+    ${TARGET:+--target "${TARGET}"} \
+    --title "${TAG}" \
+    --notes "${NOTES}"
+fi
 
 echo ""
-if [[ ${#DRAFT_FLAG[@]} -gt 0 ]]; then
+if [[ "$DRAFT" == true ]]; then
   echo "==> Draft created. It will NOT trigger CI until you publish it:"
   echo "      gh release edit ${TAG} --repo ${REPO} --draft=false"
 else

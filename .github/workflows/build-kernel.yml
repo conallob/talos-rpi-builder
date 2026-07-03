@@ -15,6 +15,9 @@ name: Build RPi-Kernel Installer Base
 # Trigger:
 #   - workflow_dispatch  (manual)
 #   - push of a tag matching v*-kernel  (e.g. v1.13.5-kernel)
+#   - a GitHub Release being published (e.g. via scripts/release.sh) —
+#     uses the release's tag_name as talos_version, same defaults as a
+#     v*-kernel tag push otherwise.
 
 on:
   workflow_dispatch:
@@ -51,6 +54,8 @@ on:
   push:
     tags:
       - 'v*-kernel'
+  release:
+    types: [published]
 
 jobs:
   # ── Resolve versions + decide whether the kernel needs rebuilding ─────────
@@ -90,6 +95,13 @@ jobs:
           set -euo pipefail
           if [[ "${{ github.event_name }}" == "push" ]]; then
             TAG="${{ github.ref_name }}"
+            TALOS_VERSION=$(echo "$TAG" | grep -oE '^v[0-9]+\.[0-9]+\.[0-9]+')
+            PKG_VERSION="v1.13.0"
+            LINUX_REF="79dc190b12f9"
+            INSTALLER_TAG="${TALOS_VERSION}-k-rpi"
+            RUNNER="ubuntu-24.04-arm"
+          elif [[ "${{ github.event_name }}" == "release" ]]; then
+            TAG="${{ github.event.release.tag_name }}"
             TALOS_VERSION=$(echo "$TAG" | grep -oE '^v[0-9]+\.[0-9]+\.[0-9]+')
             PKG_VERSION="v1.13.0"
             LINUX_REF="79dc190b12f9"

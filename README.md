@@ -95,6 +95,15 @@ All workflow files use `github.repository_owner` for all GHCR paths — they are
 > **Step 2 → `build-overlay.yml`** (custom sbc-raspberrypi overlay with DTB patches)
 > **Step 3 → `publish.yml`** (disk image + installer OCI + GitHub release)
 
+### Cutting a release
+
+All three workflows also trigger automatically when a **GitHub Release is published** (in addition to their existing `workflow_dispatch`/tag-push triggers), so publishing one release kicks off the full pipeline. Two ways to publish one:
+
+- **`./scripts/release.sh vX.Y.Z`** — creates the release (no assets) with real release notes of your choosing; CI then runs and `publish.yml` uploads `metal-arm64.raw.xz` to that same release (`gh release upload`, not a delete+recreate — this is what keeps the trigger from looping on itself). Use `--draft` to stage it and publish manually when ready (a draft does **not** fire the trigger).
+- **`git tag vX.Y.Z && git push --tags`** — the original path; still works unchanged, and still gets a generic auto-generated release body from `publish.yml`.
+
+Either way, `build-kernel.yml` and `build-overlay.yml` derive their version/SHA inputs from the release tag with the same defaults as a manual dispatch (see each workflow's header comment) — override by triggering them manually first if you need non-default `pkg_version`/`linux_ref`/`pr88_sha`/etc. before cutting the release.
+
 ### Step 1 — Build RPi-Kernel Installer Base (`build-kernel.yml`)
 
 Builds the custom installer-base OCI image that `publish.yml` consumes. Run this first whenever you bump Talos or the pinned Pi kernel SHA.

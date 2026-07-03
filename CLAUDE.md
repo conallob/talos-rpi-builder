@@ -38,6 +38,8 @@ Overrides are `make build VAR=value`, e.g. `TALOS_VERSION`, `CUSTOM_OVERLAY_IMAG
 
 There is no test suite. "Verification" is: build the image, flash it, boot real hardware. `build-overlay.yml`/`build-overlay.sh` do run a `patch --dry-run` sanity check against a fresh `raspberrypi/linux` checkout before invoking `make sbc-raspberrypi`, to fail fast on patch context drift — that's the closest thing to CI here.
 
+`./scripts/release.sh vX.Y.Z` cuts a release the CI-driven way (see "Release triggers" below) instead of `git tag && git push --tags`.
+
 ## Architecture: the three-stage pipeline
 
 **Run order matters — each stage consumes the previous stage's published OCI image.** Never run `publish.yml` before the other two have succeeded and `Makefile`/`CUSTOM_INSTALLER_BASE` point at the right tags.
@@ -59,6 +61,14 @@ There is no test suite. "Verification" is: build the image, flash it, boot real 
    - Triggered by pushing a `v*` tag, or manually.
    - Resolves extension images (`iscsi-tools`, `util-linux-tools`, `nvme-cli`, `tailscale`) to digests via `crane digest` before building, for reproducibility.
    - Builds via the *patched* `imager-rpi:<talos_version>-rpi` image (not the stock `ghcr.io/siderolabs/imager`) — that patched imager is what `build-kernel.yml` step 6 produces, tagged separately from `rpi-talos` in step "Tag imager as imager-rpi".
+
+### Release triggers
+
+All three workflows also fire on `release: types: [published]`, so publishing a GitHub Release kicks off the whole pipeline in one shot — `./scripts/release.sh vX.Y.Z` is the intended way to do this (creates the release with no assets; a draft release does *not* fire the trigger). This was added on top of the pre-existing `workflow_dispatch`/tag-push triggers, which still work unchanged.
+
+**The loop hazard this created and how it's avoided:** `publish.yml`'s release job originally always did `gh release delete && gh release create`. If that ran unconditionally on a `release:published` trigger, it would delete-and-recreate the very release that triggered it, firing `published` again — infinite loop. Fixed by branching on `github.event_name`: a `release`-triggered run does `gh release upload <tag> --clobber` (attaches the asset to the *existing* release, no new release object, no new event) instead. Tag-push/workflow_dispatch runs keep the original delete+recreate behavior. **If you touch the release step again, preserve this branch** — don't collapse it back to a single unconditional `gh release create`.
+
+`build-kernel.yml` and `build-overlay.yml` don't create releases, so they don't have this hazard — a `release`-triggered run of either just needs its inputs resolved with fallback defaults, since `github.event.inputs.*` is only populated for `workflow_dispatch` (see each workflow's "Resolve inputs"/"Resolve versions" step for the pattern: `${{ github.event.inputs.x || 'default' }}` in build-overlay.yml, an explicit `elif github.event_name == 'release'` branch in build-kernel.yml).
 
 ## Versioning quirks — read before bumping `TALOS_VERSION`
 

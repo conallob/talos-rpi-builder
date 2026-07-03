@@ -6,7 +6,7 @@ name: Build and Publish Talos CM4/CM5 Image
 #
 # Trigger:
 #   - workflow_dispatch (manual)
-#   - push of a tag matching v* (e.g. v1.13.0)
+#   - push of a tag matching v* (e.g. v1.13.5)
 
 on:
   push:
@@ -15,13 +15,13 @@ on:
   workflow_dispatch:
     inputs:
       talos_version:
-        description: 'Base Talos version (e.g. v1.13.0)'
+        description: 'Base Talos version (e.g. v1.13.5)'
         required: false
-        default: 'v1.13.0'
+        default: 'v1.13.5'
       installer_base:
-        description: 'RPi-kernel installer base produced by build-kernel.yml'
+        description: 'RPi-kernel installer base produced by build-kernel.yml (leave blank to use ghcr.io/<owner>/rpi-talos:v1.13.5-k-rpi)'
         required: false
-        default: 'ghcr.io/wheetazlab/rpi-talos:v1.13.0-k-rpi'
+        default: ''
       overlay_image:
         description: 'sbc-raspberrypi overlay image produced by build-overlay.yml (leave blank to use Makefile default)'
         required: false
@@ -47,8 +47,10 @@ env:
   EXTENSION_TAILSCALE_IMAGE: ghcr.io/siderolabs/tailscale:1.96.4
   # raspberrypi/linux rpi-6.18.y at the pinned linux_ref.
   RPI_LINUX_KERNEL_VERSION: 'raspberrypi/linux rpi-6.18.y @ 79dc190b12f9'
-  # Default installer base when triggered by tag push (no workflow_dispatch input).
-  RPI_INSTALLER_BASE_DEFAULT: 'ghcr.io/wheetazlab/rpi-talos:v1.13.0-k-rpi'
+  # Default installer base when no workflow_dispatch override is given — tracks
+  # this fork's own build-kernel.yml output (github.repository_owner keeps it
+  # portable across forks instead of hardcoding an upstream org).
+  RPI_INSTALLER_BASE_DEFAULT: 'ghcr.io/${{ github.repository_owner }}/rpi-talos:v1.13.5-k-rpi'
 
 jobs:
   # ── Resolve the Talos version once and share it across all jobs ─────────────

@@ -10,19 +10,19 @@ name: Build RPi-Kernel Installer Base
 # reuse the published image.
 #
 # Output: ghcr.io/<owner>/rpi-talos:<installer_tag>
-#   default tag: v1.13.0-k-rpi
+#   default tag: v1.13.5-k-rpi
 #
 # Trigger:
 #   - workflow_dispatch  (manual)
-#   - push of a tag matching v*-kernel  (e.g. v1.13.0-kernel)
+#   - push of a tag matching v*-kernel  (e.g. v1.13.5-kernel)
 
 on:
   workflow_dispatch:
     inputs:
       talos_version:
-        description: 'Talos version (e.g. v1.13.0)'
+        description: 'Talos version (e.g. v1.13.5)'
         required: false
-        default: 'v1.13.0'
+        default: 'v1.13.5'
       pkg_version:
         description: 'siderolabs/pkgs ref — must match the base of the vendored Pkgfile patch (anchored on tag v1.13.0)'
         required: false
@@ -32,9 +32,9 @@ on:
         required: false
         default: '79dc190b12f9'
       installer_tag:
-        description: 'Output image tag (e.g. v1.13.0-k-rpi)'
+        description: 'Output image tag (e.g. v1.13.5-k-rpi)'
         required: false
-        default: 'v1.13.0-k-rpi'
+        default: 'v1.13.5-k-rpi'
       kernel_image:
         description: 'Optional: fully-qualified kernel image ref to use (e.g. ghcr.io/me/kernel-rpi:my-tag). If set, skips both cache lookup and kernel rebuild.'
         required: false

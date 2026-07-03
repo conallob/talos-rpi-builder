@@ -10,8 +10,8 @@ UTIL_LINUX_VERSION   ?= 2.41.4
 NVME_CLI_VERSION     ?= v2.14
 TAILSCALE_VERSION    ?= 1.96.4
 # CUSTOM_INSTALLER_BASE: defined in .github/workflows/publish.yml as workflow_dispatch input.
-#   Default there = ghcr.io/wheetazlab/rpi-talos:<TALOS_VERSION>-k-rpi (Pi-vendor kernel + 16K).
-CUSTOM_OVERLAY_IMAGE ?= ghcr.io/wheetazlab/sbc-raspberrypi:pr88-cd5
+#   Default there = ghcr.io/<repository_owner>/rpi-talos:<TALOS_VERSION>-k-rpi (Pi-vendor kernel + 16K).
+CUSTOM_OVERLAY_IMAGE ?= ghcr.io/conallob/sbc-raspberrypi:pr88-cd5
 
 # --- Build config --------------------------------------------------------------
 ARCH        ?= arm64

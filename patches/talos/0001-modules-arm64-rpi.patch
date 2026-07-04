@@ -1,17 +1,17 @@
-From 40354cc18ff468c194f790829c4b39eb6804cd16 Mon Sep 17 00:00:00 2001
+From 4c506d5b4438a43b4a119ee2b08b5b3cc9d2b2f5 Mon Sep 17 00:00:00 2001
 From: local-build <local@build>
-Date: Wed, 8 Apr 2026 12:20:17 -0500
+Date: Sat, 4 Jul 2026 13:07:24 +0000
 Subject: [PATCH] Patched for Raspberry Pi 5
 
 ---
- hack/modules-arm64.txt | 309 +++++++++++++++++------------------------
- 1 file changed, 98 insertions(+), 211 deletions(-)
+ hack/modules-arm64.txt | 305 +++++++++++++----------------------------
+ 1 file changed, 95 insertions(+), 210 deletions(-)
 
 diff --git a/hack/modules-arm64.txt b/hack/modules-arm64.txt
-index 8df29effd..27a59e717 100644
+index 9c87f82..42bf976 100644
 --- a/hack/modules-arm64.txt
 +++ b/hack/modules-arm64.txt
-@@ -1,239 +1,126 @@
+@@ -1,241 +1,126 @@
 -kernel/arch/arm64/lib/xor-neon.ko
 +modules.builtin.bin
 +modules.builtin.modinfo
@@ -93,12 +93,12 @@ index 8df29effd..27a59e717 100644
 -kernel/drivers/infiniband/core/ib_umad.ko
 -kernel/drivers/infiniband/core/ib_uverbs.ko
 -kernel/drivers/infiniband/core/rdma_ucm.ko
+-kernel/drivers/infiniband/hw/bnxt_re/bnxt_re.ko
 -kernel/drivers/infiniband/hw/hns/hns-roce-hw-v2.ko
 -kernel/drivers/infiniband/hw/irdma/irdma.ko
 -kernel/drivers/infiniband/hw/mlx4/mlx4_ib.ko
 -kernel/drivers/infiniband/hw/mlx5/mlx5_ib.ko
 -kernel/drivers/infiniband/sw/rxe/rdma_rxe.ko
--kernel/drivers/irqchip/irq-bcm2712-mip.ko
 -kernel/drivers/irqchip/irq-imx-mu-msi.ko
 -kernel/drivers/leds/led-class-multicolor.ko
 -kernel/drivers/mailbox/bcm-flexrm-mailbox.ko
@@ -128,11 +128,6 @@ index 8df29effd..27a59e717 100644
 -kernel/drivers/mmc/host/sdhci-tegra.ko
 -kernel/drivers/mmc/host/sdhci-uhs2.ko
 -kernel/drivers/mmc/host/sdhci-xenon-driver.ko
-+kernel/drivers/nvme/target/nvme-loop.ko
-+kernel/drivers/nvme/target/nvmet-fc.ko
-+kernel/drivers/nvme/target/nvmet.ko
-+kernel/drivers/nvme/target/nvmet-tcp.ko
-+kernel/drivers/nvme/common/nvme-auth.ko
 -kernel/drivers/net/ethernet/amazon/ena/ena.ko
 -kernel/drivers/net/ethernet/aquantia/atlantic/atlantic.ko
 -kernel/drivers/net/ethernet/atheros/alx/alx.ko
@@ -198,6 +193,7 @@ index 8df29effd..27a59e717 100644
 -kernel/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.ko
 -kernel/drivers/net/ethernet/stmicro/stmmac/dwmac-renesas-gbeth.ko
 -kernel/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.ko
+-kernel/drivers/net/ethernet/stmicro/stmmac/dwmac-sun55i.ko
 -kernel/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.ko
 -kernel/drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.ko
 -kernel/drivers/net/ethernet/stmicro/stmmac/dwmac-tegra.ko
@@ -206,19 +202,19 @@ index 8df29effd..27a59e717 100644
 -kernel/drivers/net/ethernet/stmicro/stmmac/stmmac.ko
 -kernel/drivers/net/mdio.ko
 -kernel/drivers/net/pcs/pcs_xpcs.ko
+-kernel/drivers/net/pcs/pcs-rzn1-miic.ko
 -kernel/drivers/net/phy/dp83867.ko
 -kernel/drivers/net/usb/r8152.ko
 -kernel/drivers/net/vmxnet3/vmxnet3.ko
-+kernel/drivers/net/phy/ax88796b.ko
- kernel/drivers/net/vrf.ko
+-kernel/drivers/net/vrf.ko
 -kernel/drivers/nvme/common/nvme-auth.ko
 -kernel/drivers/nvme/host/nvme-rdma.ko
 -kernel/drivers/nvme/host/nvme.ko
--kernel/drivers/nvme/target/nvme-loop.ko
--kernel/drivers/nvme/target/nvmet-fc.ko
+ kernel/drivers/nvme/target/nvme-loop.ko
+ kernel/drivers/nvme/target/nvmet-fc.ko
 -kernel/drivers/nvme/target/nvmet-rdma.ko
 -kernel/drivers/nvme/target/nvmet-tcp.ko
--kernel/drivers/nvme/target/nvmet.ko
+ kernel/drivers/nvme/target/nvmet.ko
 -kernel/drivers/perf/hisilicon/hisi_pcie_pmu.ko
 -kernel/drivers/perf/hisilicon/hisi_uncore_cpa_pmu.ko
 -kernel/drivers/perf/hisilicon/hisi_uncore_ddrc_pmu.ko
@@ -229,6 +225,10 @@ index 8df29effd..27a59e717 100644
 -kernel/drivers/perf/hisilicon/hisi_uncore_sllc_pmu.ko
 -kernel/drivers/perf/hisilicon/hisi_uncore_uc_pmu.ko
 -kernel/drivers/perf/hisilicon/hns3_pmu.ko
++kernel/drivers/nvme/target/nvmet-tcp.ko
++kernel/drivers/nvme/common/nvme-auth.ko
++kernel/drivers/net/phy/ax88796b.ko
++kernel/drivers/net/vrf.ko
 +kernel/drivers/irqchip/irq-imx-mu-msi.ko
 +kernel/drivers/mailbox/bcm-flexrm-mailbox.ko
 +kernel/drivers/hwmon/i5k_amb.ko
@@ -258,9 +258,9 @@ index 8df29effd..27a59e717 100644
 -kernel/drivers/usb/serial/cp210x.ko
 -kernel/drivers/usb/serial/ftdi_sio.ko
 -kernel/drivers/usb/serial/pl2303.ko
+-kernel/drivers/vdpa/mlx5/mlx5_vdpa.ko
 +kernel/drivers/thunderbolt/thunderbolt.ko
 +kernel/drivers/vdpa/vdpa.ko
--kernel/drivers/vdpa/mlx5/mlx5_vdpa.ko
  kernel/drivers/vdpa/octeon_ep/octep_vdpa.ko
  kernel/drivers/vdpa/solidrun/snet_vdpa.ko
 +kernel/drivers/vdpa/vdpa_sim/vdpa_sim.ko
@@ -289,6 +289,8 @@ index 8df29effd..27a59e717 100644
 +kernel/drivers/usb/serial/usb_wwan.ko
 +kernel/drivers/usb/serial/option.ko
  kernel/drivers/watchdog/sbsa_gwdt.ko
+-kernel/lib/objagg.ko
+-kernel/lib/parman.ko
 +kernel/drivers/md/dm-round-robin.ko
 +kernel/drivers/md/raid456.ko
 +kernel/drivers/md/persistent-data/dm-persistent-data.ko
@@ -335,10 +337,7 @@ index 8df29effd..27a59e717 100644
 +kernel/drivers/media/v4l2-core/videodev.ko
 +kernel/drivers/media/mc/mc.ko
 +kernel/arch/arm64/lib/xor-neon.ko
-+kernel/lib/raid6/raid6_pq.ko
--kernel/lib/objagg.ko
--kernel/lib/parman.ko
--kernel/lib/raid6/raid6_pq.ko
+ kernel/lib/raid6/raid6_pq.ko
 -kernel/net/ipv4/ip_gre.ko
 -kernel/net/ipv6/ip6_gre.ko
 -kernel/net/openvswitch/vport-gre.ko
@@ -349,3 +348,6 @@ index 8df29effd..27a59e717 100644
  modules.builtin
 -modules.builtin.modinfo
 -modules.order
+-- 
+2.43.0
+

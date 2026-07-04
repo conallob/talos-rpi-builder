@@ -48,7 +48,19 @@ There is no test suite. "Verification" is: build the image, flash it, boot real 
    - Delegates the actual kernel compile to the reusable `build-kernel-pkg.yml`, which is **content-hash-tagged** (`kernel-rpi:<linux_ref>-<hash of pkgs-patch + kernel config>`) so unrelated reruns skip a full kernel rebuild and reuse the cached GHCR image. Pass `force_rebuild_kernel: true` to force it.
    - Clones `siderolabs/pkgs` at `pkg_version`, applies `patches/pkgs/0001-Patched-for-Raspberry-Pi-5.patch` (swaps kernel source from upstream stable to `raspberrypi/linux` rpi-6.18.y at `linux_ref`), drops in `patches/pkgs/config-arm64-rpi` as the kernel config.
    - A workflow step **asserts** the vendored Pkgfile patch's `linux_version:` matches the `linux_ref` input — if you bump `linux_ref`, you must regenerate the patch (its `linux_version`/`sha256`/`sha512` hunk) or the workflow hard-fails on purpose.
-   - Then clones `siderolabs/talos` at `talos_version`, applies `patches/talos/0001-modules-arm64-rpi.patch` (trims `hack/modules-arm64.txt` — this file has been iterated on heavily; see git log for the module-by-module trial-and-error of what can be dropped to shrink the image without breaking boot), and builds `imager`/`installer-base` with `PKG_KERNEL=` pointing at the Pi kernel.
+   - Then clones `siderolabs/talos` at `talos_version`, applies `patches/talos/0001-modules-arm64-rpi.patch` via `git am` (trims `hack/modules-arm64.txt` — this file has been iterated on heavily; see git log for the module-by-module trial-and-error of what can be dropped to shrink the image without breaking boot), and builds `imager`/`installer-base` with `PKG_KERNEL=` pointing at the Pi kernel.
+   - **This patch has no dry-run guard** (unlike the pkgs Pkgfile patch's `linux_version:` assert, or the overlay's forward-aware patch loop) — it's a plain `git am`, so it silently breaks with `patch does not apply` if upstream Talos edits `hack/modules-arm64.txt` between releases (confirmed happening between whatever base this was cut against and `v1.13.5`: upstream's file grew from 239 to 241 lines). Because `git am` needs a real 3-way-mergeable patch, you can't just re-diff the old patch against a new base — regenerate it like this:
+     ```bash
+     # 1. Reconstruct the patch's intended *final* file content (context + added lines, skip removed lines)
+     #    from the existing patches/talos/0001-modules-arm64-rpi.patch — this is the actual list of modules
+     #    that must survive, independent of whatever Talos version the patch was last cut against.
+     # 2. Fetch the new base: curl -O https://raw.githubusercontent.com/siderolabs/talos/<talos_version>/hack/modules-arm64.txt
+     # 3. In a scratch git repo: commit the new base, then commit the reconstructed target content over it,
+     #    then `git format-patch -1 HEAD --stdout` to produce a fresh, valid patch.
+     # 4. Verify: shallow-clone siderolabs/talos at <talos_version>, `git am` the new patch, diff the result
+     #    against the reconstructed target to confirm an exact match before committing.
+     ```
+     This fix only surfaces once `build-installer` runs (a separate job from the kernel compile), so it doesn't waste kernel build time when it breaks — but it does mean `publish.yml`'s image-wait loop will time out if you don't catch it.
 
 2. **`build-overlay.yml`** / `scripts/build-overlay.sh` → `ghcr.io/<owner>/sbc-raspberrypi:<overlay_tag>` (e.g. `pr88-cd5`)
    - Forks `sidero-community/sbc-raspberrypi` at `pr88_sha` (the PR #88 branch — see "core problem" above).

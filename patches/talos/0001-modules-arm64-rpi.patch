@@ -1,17 +1,17 @@
-From 4c506d5b4438a43b4a119ee2b08b5b3cc9d2b2f5 Mon Sep 17 00:00:00 2001
+From a6eb6c521b55429b9bb5dcf3d0a2c119084be783 Mon Sep 17 00:00:00 2001
 From: local-build <local@build>
-Date: Sat, 4 Jul 2026 13:07:24 +0000
+Date: Tue, 21 Jul 2026 21:46:04 +0100
 Subject: [PATCH] Patched for Raspberry Pi 5
 
 ---
- hack/modules-arm64.txt | 305 +++++++++++++----------------------------
- 1 file changed, 95 insertions(+), 210 deletions(-)
+ hack/modules-arm64.txt | 310 +++++++++++++----------------------------
+ 1 file changed, 95 insertions(+), 215 deletions(-)
 
 diff --git a/hack/modules-arm64.txt b/hack/modules-arm64.txt
-index 9c87f82..42bf976 100644
+index 9cb2afe..42bf976 100644
 --- a/hack/modules-arm64.txt
 +++ b/hack/modules-arm64.txt
-@@ -1,241 +1,126 @@
+@@ -1,246 +1,126 @@
 -kernel/arch/arm64/lib/xor-neon.ko
 +modules.builtin.bin
 +modules.builtin.modinfo
@@ -99,6 +99,7 @@ index 9c87f82..42bf976 100644
 -kernel/drivers/infiniband/hw/mlx4/mlx4_ib.ko
 -kernel/drivers/infiniband/hw/mlx5/mlx5_ib.ko
 -kernel/drivers/infiniband/sw/rxe/rdma_rxe.ko
+-kernel/drivers/iommu/iommufd/iommufd.ko
 -kernel/drivers/irqchip/irq-imx-mu-msi.ko
 -kernel/drivers/leds/led-class-multicolor.ko
 -kernel/drivers/mailbox/bcm-flexrm-mailbox.ko
@@ -129,6 +130,7 @@ index 9c87f82..42bf976 100644
 -kernel/drivers/mmc/host/sdhci-uhs2.ko
 -kernel/drivers/mmc/host/sdhci-xenon-driver.ko
 -kernel/drivers/net/ethernet/amazon/ena/ena.ko
+-kernel/drivers/net/ethernet/amd/xgbe/amd-xgbe.ko
 -kernel/drivers/net/ethernet/aquantia/atlantic/atlantic.ko
 -kernel/drivers/net/ethernet/atheros/alx/alx.ko
 -kernel/drivers/net/ethernet/broadcom/bnx2.ko
@@ -200,10 +202,13 @@ index 9c87f82..42bf976 100644
 -kernel/drivers/net/ethernet/stmicro/stmmac/stmmac-pci.ko
 -kernel/drivers/net/ethernet/stmicro/stmmac/stmmac-platform.ko
 -kernel/drivers/net/ethernet/stmicro/stmmac/stmmac.ko
+-kernel/drivers/net/ifb.ko
 -kernel/drivers/net/mdio.ko
+-kernel/drivers/net/mdio/mdio-i2c.ko
 -kernel/drivers/net/pcs/pcs_xpcs.ko
 -kernel/drivers/net/pcs/pcs-rzn1-miic.ko
 -kernel/drivers/net/phy/dp83867.ko
+-kernel/drivers/net/phy/sfp.ko
 -kernel/drivers/net/usb/r8152.ko
 -kernel/drivers/net/vmxnet3/vmxnet3.ko
 -kernel/drivers/net/vrf.ko
@@ -349,5 +354,5 @@ index 9c87f82..42bf976 100644
 -modules.builtin.modinfo
 -modules.order
 -- 
-2.43.0
+2.50.1 (Apple Git-155)
 

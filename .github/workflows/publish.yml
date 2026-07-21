@@ -6,7 +6,7 @@ name: Build and Publish Talos CM4/CM5 Image
 #
 # Trigger:
 #   - workflow_dispatch (manual)
-#   - push of a tag matching v* (e.g. v1.13.5)
+#   - push of a tag matching v* (e.g. v1.13.7)
 #   - a GitHub Release being published (e.g. via scripts/release.sh) — in
 #     this case the built image is uploaded to that same release (not a
 #     fresh delete+recreate) to avoid the release job re-triggering itself.
@@ -27,11 +27,11 @@ on:
   workflow_dispatch:
     inputs:
       talos_version:
-        description: 'Base Talos version (e.g. v1.13.5)'
+        description: 'Base Talos version (e.g. v1.13.7)'
         required: false
-        default: 'v1.13.5'
+        default: 'v1.13.7'
       installer_base:
-        description: 'RPi-kernel installer base produced by build-kernel.yml (leave blank to use ghcr.io/<owner>/rpi-talos:v1.13.5-k-rpi)'
+        description: 'RPi-kernel installer base produced by build-kernel.yml (leave blank to use ghcr.io/<owner>/rpi-talos:v1.13.7-k-rpi)'
         required: false
         default: ''
       overlay_image:
@@ -62,7 +62,7 @@ env:
   # Default installer base when no workflow_dispatch override is given — tracks
   # this fork's own build-kernel.yml output (github.repository_owner keeps it
   # portable across forks instead of hardcoding an upstream org).
-  RPI_INSTALLER_BASE_DEFAULT: 'ghcr.io/${{ github.repository_owner }}/rpi-talos:v1.13.5-k-rpi'
+  RPI_INSTALLER_BASE_DEFAULT: 'ghcr.io/${{ github.repository_owner }}/rpi-talos:v1.13.7-k-rpi'
 
 concurrency:
   group: publish-${{ github.event.release.tag_name || github.event.inputs.talos_version || github.ref_name }}

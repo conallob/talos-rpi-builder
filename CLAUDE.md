@@ -99,6 +99,8 @@ All three workflows also fire on `release: types: [published]`, so publishing a 
 
 The Makefile's `CUSTOM_OVERLAY_IMAGE` default is a plain string too (Makefiles can't read `github.repository_owner`), so it must be hand-updated per fork after running `build-overlay.yml` — currently `ghcr.io/conallob/sbc-raspberrypi:pr88-cd5`.
 
+**`gh pr create` defaults to the fork parent, not `origin`.** This repo is a fork (`conallob/talos-rpi-builder` ← `ograff/talos-rpi-builder` ← `wheetazlab/talos-rpi-builder`), and `gh pr create` without `--repo` targets the parent repo reported by GitHub's fork relationship, not wherever `git remote -v` shows `origin` pointing. This silently opened a PR against `ograff/talos-rpi-builder` instead of `conallob/talos-rpi-builder` even though `origin` was correctly set to the latter. **Always pass `--repo conallob/talos-rpi-builder` explicitly** when running `gh pr create` (and when scripting `gh` calls generally — `gh pr view`, `gh pr checks`, etc. have the same default-to-parent behavior).
+
 ## Current state / in-flight work
 
 This fork is actively working through Pi 5/CM5 boot issues (see extensive git log of kernel-module-trimming and DTB-patch trial-and-error) and expects to cut **multiple** Talos releases until factory.talos.dev / upstream `sbc-raspberrypi` resolve PR #88 and the CM5 issues properly. When starting a new release cycle:

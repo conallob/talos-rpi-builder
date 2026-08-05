@@ -1,0 +1,3 @@
+Let's enable UART debugging in the config.txt, by adding `uart_2ndstage=1` to config.txt
+
+Let's update the necessary configs and cut a release tracking talos v1.13.6, which was released last week.

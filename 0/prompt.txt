@@ -1,0 +1,1 @@
+Give me a summary of what we have done and what the next steps are. I'm going to go back to a local claude code session that doesn't have all these auth and sandbox issues

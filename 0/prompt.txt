@@ -1,0 +1,2 @@
+`ssh -T git@github.com                         SIGTSTP(18) ↵  ⚙  1013  21:52:58
+Hi conallob! You've successfully authenticated, but GitHub does not provide shell access.`

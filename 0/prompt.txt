@@ -1,0 +1,22 @@
+```
+git push -u origin claude/talos-v1.13.7-release
+Enumerating objects: 21, done.
+Counting objects: 100% (21/21), done.
+Delta compression using up to 12 threads
+Compressing objects: 100% (11/11), done.
+Writing objects: 100% (11/11), 2.36 KiB | 2.36 MiB/s, done.
+Total 11 (delta 8), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (8/8), completed with 8 local objects.
+remote:
+remote: Create a pull request for 'claude/talos-v1.13.7-release' on GitHub by visiting:
+remote:      https://github.com/conallob/talos-rpi-builder/pull/new/claude/talos-v1.13.7-release
+remote:
+To github.com:conallob/talos-rpi-builder.git
+ * [new branch]      claude/talos-v1.13.7-release -> claude/talos-v1.13.7-release
+branch 'claude/talos-v1.13.7-release' set up to track 'origin/claude/talos-v1.13.7-release'.
+ conall@jazz  ~/Documents/GitHub/talos-rpi-builder   claude/talos-v1.13.7-release ⍟1  gh pr create --title "Bump to Talos v1.13.7, enable UART console + netconsole debugging" --fill
+? Locate your GitHub Personal Access Token: 1Password Github Personal Access Token (Private)
+
+HTTP 401: Bad credentials (https://api.github.com/graphql)
+Try authenticating with:  gh auth login -h github.com
+```

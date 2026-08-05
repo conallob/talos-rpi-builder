@@ -1,0 +1,31 @@
+Goal: Bump to Talos v1.13.7, add UART console + netconsole boot debugging, and cut a release.
+
+  Done (committed locally on branch claude/talos-v1.13.7-release, pushed to origin — commit 3224afe):
+  1. Makefile: TALOS_VERSION → v1.13.7
+  2. Synced hardcoded version defaults in .github/workflows/build-kernel.yml, .github/workflows/publish.yml, and README.md (all v1.13.5 → v1.13.7)
+  3. Regenerated patches/talos/0001-modules-arm64-rpi.patch against upstream Talos v1.13.7's hack/modules-arm64.txt (241→246 lines upstream: added iommufd, amd-xgbe, ifb,
+  mdio-i2c, sfp) — verified by reconstructing the intended module list, applying via git am against the new base, and diffing to an exact match
+  4. Confirmed no changes needed to pkg_version (still v1.13.0, no new siderolabs/pkgs tag) or linux_ref (macb TX-stall fix still upstreamed there)
+  5. Makefile EXTRA_KERNEL_ARGS default now includes:
+    - console=ttyAMA0,115200 (PL011 UART serial console)
+    - netconsole=@/,514@192.168.1.3/ (UDP kernel log streaming, auto-detected source, no target MAC pinned)
+  6. Updated CLAUDE.md with a new "Fork-portability gotchas" entry: gh pr create (and other gh commands) default to the fork parent (ograff/talos-rpi-builder), not origin —
+  always pass --repo conallob/talos-rpi-builder explicitly
+  7. Investigated current Pi5/CM5 upstream state (worth knowing before this release): PR #88 still unmerged; author appkins says his own U-Boot fork has surpassed it and he's
+  unsure #88 is worth merging as-is; maintainer frezbo still insists rpi_5 stay a separate overlay. Confirmed macb fix (#82/#91) is stable upstream (343+ node-hours, zero
+  wedges). No better upstream alternative exists yet, so pr88_sha/CUSTOM_OVERLAY_IMAGE were left unchanged.
+
+  Blocked/not done (sandbox limitations in this session — should work fine in your local session):
+  - PR was accidentally opened against ograff/talos-rpi-builder (PR #1) — you already closed that
+  - Correct PR against conallob/talos-rpi-builder not yet created — gh couldn't run non-interactively in this sandbox
+  - No Claude Code Review triggered yet
+  - PR not merged
+  - ./scripts/release.sh v1.13.7 not run — release not cut, CI pipeline not triggered
+
+  Next steps for your local session:
+  1. gh pr create --repo conallob/talos-rpi-builder --title "Bump to Talos v1.13.7, enable UART console + netconsole debugging" --fill (branch claude/talos-v1.13.7-release is
+  already pushed)
+  2. Get Claude Code Review on the PR (needed since you're the author and can't self-approve otherwise)
+  3. Address any review feedback, merge to main
+  4. Run ./scripts/release.sh v1.13.7 to cut the release and kick off build-kernel.yml → build-overlay.yml → publish.yml
+  5. Watch the three workflows complete in order before considering it done (per repo's pipeline architecture — each stage consumes the previous one's published image)

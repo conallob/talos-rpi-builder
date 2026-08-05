@@ -1,0 +1,3 @@
+Now there's https://github.com/siderolabs/talos/releases#release-v1.13.7 , so we need to update the config and cut a release to build the new v1.13.7 image
+
+Before we kick off the build though, have there been any further developments to help get the rpi5 or cm5 working with Talos?

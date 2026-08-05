@@ -1,0 +1,2 @@
+<bash-stdout></bash-stdout><bash-stderr>[ERROR] 2026/07/21 22:13:46 multiple accounts found. Use the --account flag or set the OP_ACCOUNT environment variable to select an account.
+</bash-stderr>

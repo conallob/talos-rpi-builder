@@ -1,0 +1,1 @@
+<bash-input> op signin</bash-input>

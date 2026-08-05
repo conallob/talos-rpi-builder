@@ -1,0 +1,1 @@
+I already closed https://github.com/ograff/talos-rpi-builder/pull/1

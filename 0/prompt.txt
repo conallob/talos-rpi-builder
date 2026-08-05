@@ -1,0 +1,1 @@
+<bash-input> op signin --account taku-ie.1password.com</bash-input>

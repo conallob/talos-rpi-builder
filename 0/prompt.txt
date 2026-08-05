@@ -1,0 +1,3 @@
+https://github.com/siderolabs/talos/releases/tag/v1.13.8 was released yesterday. Let's dump this release framework to track v1.13.8
+
+Before we kick off the release process, let's also check to see if there are any recent develoepments we're tracking wrt talos v1.13 on the RPi5 or CM5

@@ -1,0 +1,1 @@
+My ssh-agent is 1Password, which is also accesible via mcp. My ssh keys all have the `ssh-key` label in 1Password

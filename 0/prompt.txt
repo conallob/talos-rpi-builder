@@ -1,0 +1,1 @@
+`gh` was complaining about auth issues for me too. So I went ahead and manually created https://github.com/ograff/talos-rpi-builder/pull/2 via the Github Web UI

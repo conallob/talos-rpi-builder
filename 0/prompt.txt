@@ -1,0 +1,12 @@
+Ok, I now have the Raspberry Pi UART connected via a Raspberry Pi Debug Probe, it's output is now available in  the `mcp-ssh-wingman`, but spoiler alert, it appears to be stuck in a reboot loop
+
+Let's take a closer at both `mcp-ssh-wingman` and the JetKVM interface, which it is also connected to
+
+---
+
+I don't think there's any value watching the reboot loop ad nausiam
+
+talos v1.13.8 was released recently. I've created branch https://github.com/conallob/talos-rpi-builder/tree/claude/talos-v1.13.8-release , but annoyingly, it's attempting to contribute the 1.13.8 fixed to https://github.com/ograff/talos-rpi-builder (which I forked), instead of trying to contribute features to https://github.com/conallob/talos-rpi-builder
+
+
+If we're building a new image for v1.13.8, might as well kill two birds with the one build and fix the kernel args before the build starts

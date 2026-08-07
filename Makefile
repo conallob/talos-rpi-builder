@@ -23,14 +23,21 @@ TTY_FLAG    := $(shell [ -t 0 ] && echo "-t" || echo "")
 
 # Extra kernel args — pass as a space-separated list of --extra-kernel-arg="..." flags
 # e.g. make build EXTRA_KERNEL_ARGS='--extra-kernel-arg=cma=256M --extra-kernel-arg=hugepages=64'
-# Default enables:
-#   - the PL011 UART (ttyAMA0, GPIO14/15) as a serial console for kernel/Talos boot
-#     debugging on CM4/CM5/Pi4/Pi5.
-#   - netconsole, streaming kernel log messages via UDP to 192.168.1.3:514. Source
-#     iface/IP/MAC are left blank so the kernel auto-selects the first available NIC
-#     and ARPs for the target MAC at boot.
+# Default enables the PL011 UART (ttyAMA0) as a serial console for kernel/Talos boot
+# debugging on CM4/CM5/Pi4/Pi5. On CM5/Pi5 this is uart10 (the JST-SH debug UART),
+# the only PL011 instance enabled in the BCM2712 DT, so it registers as ttyAMA0
+# there too.
+#
+# netconsole was tried here (UDP kernel log streaming to 192.168.1.3:514) and
+# pulled after it produced a silent full-hardware-reset boot loop on CM5 real
+# hardware with zero UART output — consistent with netpoll's early netconsole_init
+# crashing before the console subsystem flushes anything, plausibly interacting
+# with the macb TX-stall history on this SoC's PCIe Ethernet controller (see
+# "The core problem" in CLAUDE.md). Root cause not fully isolated; don't
+# re-add netconsole without verifying against real hardware with UART attached.
+#
 # Override to blank to disable.
-EXTRA_KERNEL_ARGS ?= --extra-kernel-arg=console=ttyAMA0,115200 --extra-kernel-arg=netconsole=@/,514@192.168.1.3/
+EXTRA_KERNEL_ARGS ?= --extra-kernel-arg=console=ttyAMA0,115200
 
 # --- GHCR publish config -------------------------------------------------------
 GHCR_ORG        ?= ${GITHUB_REPOSITORY_OWNER}

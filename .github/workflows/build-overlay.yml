@@ -28,7 +28,7 @@ on:
       overlay_tag:
         description: 'Tag for the overlay image (e.g. pr88-cd1, pr88-cd2)'
         required: false
-        default: 'pr88-cd5'
+        default: 'pr88-cd6'
       uboot_version:
         description: 'u-boot/u-boot source version (for u-boot-<ver>.tar.bz2)'
         required: false
@@ -44,15 +44,15 @@ on:
       rpi_dtb_ref:
         description: 'raspberrypi/linux stable_* tag for DTB packaging'
         required: false
-        default: 'stable_20250428'
+        default: 'stable_20260724'
       rpi_dtb_sha256:
         description: 'sha256 for raspberrypi/linux tarball at rpi_dtb_ref'
         required: false
-        default: 'c95906cfbc7808de5860c6d86537bea22e3501f600a5209de59a86cb436886f6'
+        default: 'ed379d946780441248e5636a41d56fee11161f474025d4216a9fe037daef1b25'
       rpi_dtb_sha512:
         description: 'sha512 for raspberrypi/linux tarball at rpi_dtb_ref'
         required: false
-        default: '0ed5d490c491e590b5980dccf6fcac0dd3c47accbfacd40d91507c12801cff34fa6a1c68991c8a6c57bb259c909121414766f35a0b11c4bd5d62c3e11d710839'
+        default: 'b70147da8eae0a4f6b2f64ad0fc6ab1dd9a415de944646000defb7e8a418c5cba4d6a0727006721e536f0cd6f3c4959c4d921551b8eed8e3b49aab7f1f186d27'
       runner:
         description: 'GitHub Actions runner (e.g. ubuntu-24.04-arm, mac-runner)'
         required: false
@@ -104,13 +104,13 @@ jobs:
         id: cfg
         run: |
           echo "pr88_sha=${{ github.event.inputs.pr88_sha || 'e5ab77462b5ed1ee594ae71f35c0262b51a72524' }}" >> "$GITHUB_OUTPUT"
-          echo "overlay_tag=${{ github.event.inputs.overlay_tag || 'pr88-cd5' }}" >> "$GITHUB_OUTPUT"
+          echo "overlay_tag=${{ github.event.inputs.overlay_tag || 'pr88-cd6' }}" >> "$GITHUB_OUTPUT"
           echo "uboot_version=${{ github.event.inputs.uboot_version || '2026.01' }}" >> "$GITHUB_OUTPUT"
           echo "uboot_sha256=${{ github.event.inputs.uboot_sha256 || 'b60d5865cefdbc75da8da4156c56c458e00de75a49b80c1a2e58a96e30ad0d54' }}" >> "$GITHUB_OUTPUT"
           echo "uboot_sha512=${{ github.event.inputs.uboot_sha512 || 'b1f988a497c77da60faf89ed33034e9ae58c4cd7f208e5ce451f1372e13540a66289bee4f08ca2f68f105d73f1ceae058b1f713db549edbcc885d9c66bdc4f8b' }}" >> "$GITHUB_OUTPUT"
-          echo "rpi_dtb_ref=${{ github.event.inputs.rpi_dtb_ref || 'stable_20250428' }}" >> "$GITHUB_OUTPUT"
-          echo "rpi_dtb_sha256=${{ github.event.inputs.rpi_dtb_sha256 || 'c95906cfbc7808de5860c6d86537bea22e3501f600a5209de59a86cb436886f6' }}" >> "$GITHUB_OUTPUT"
-          echo "rpi_dtb_sha512=${{ github.event.inputs.rpi_dtb_sha512 || '0ed5d490c491e590b5980dccf6fcac0dd3c47accbfacd40d91507c12801cff34fa6a1c68991c8a6c57bb259c909121414766f35a0b11c4bd5d62c3e11d710839' }}" >> "$GITHUB_OUTPUT"
+          echo "rpi_dtb_ref=${{ github.event.inputs.rpi_dtb_ref || 'stable_20260724' }}" >> "$GITHUB_OUTPUT"
+          echo "rpi_dtb_sha256=${{ github.event.inputs.rpi_dtb_sha256 || 'ed379d946780441248e5636a41d56fee11161f474025d4216a9fe037daef1b25' }}" >> "$GITHUB_OUTPUT"
+          echo "rpi_dtb_sha512=${{ github.event.inputs.rpi_dtb_sha512 || 'b70147da8eae0a4f6b2f64ad0fc6ab1dd9a415de944646000defb7e8a418c5cba4d6a0727006721e536f0cd6f3c4959c4d921551b8eed8e3b49aab7f1f186d27' }}" >> "$GITHUB_OUTPUT"
 
       - name: Clone sidero-community/sbc-raspberrypi at PR #88
         run: |
@@ -139,9 +139,15 @@ jobs:
           cd sbc-raspberrypi
           mkdir -p artifacts/dtb/raspberrypi/patches
           # Delete sbc-raspberrypi's 0008: it would add mdio{} wrapper which breaks the
-          # RPi vendor RP1 driver (expects flat phy@1 structure). stable_20250428 source
-          # already has flat phy@1 — no patch needed.
+          # RPi vendor RP1 driver (expects flat phy@1 structure) — rpi_dtb_ref source
+          # already has flat phy@N, no wrapper needed.
           rm -f artifacts/dtb/raspberrypi/patches/0008-*.patch
+          # Our own 0008: rpi_dtb_ref's cm5.dtsi has the RP1 ethernet PHY at
+          # ethernet-phy@0/reg=<0x0>, but the BCM54213PE on CM5 Rev 1.0 CMIO4 is
+          # hardware-strapped to MDIO address 1 — restore phy@1/reg=<0x1> on top of
+          # the otherwise-correct upstream node (pinctrl lines, &rp1_gpio interrupt-parent).
+          cp -v "${GITHUB_WORKSPACE}/builder/patches/dtb/0008-0001-Amend-the-RP1-ethernet-node-to-work-with-upstream-dr.patch" \
+            artifacts/dtb/raspberrypi/patches/0008-0001-Amend-the-RP1-ethernet-node-to-work-with-upstream-dr.patch
           cp -v "${GITHUB_WORKSPACE}/builder/patches/dtb/0011-cm5-sdio1-drop-broken-cd.patch" \
             artifacts/dtb/raspberrypi/patches/0011-cm5-sdio1-drop-broken-cd.patch
 

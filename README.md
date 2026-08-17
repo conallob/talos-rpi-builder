@@ -262,7 +262,7 @@ GHCR_ORG=myorg OVERLAY_TAG=pr88 ./scripts/build-overlay.sh
 GHCR_ORG=myorg OVERLAY_TAG=pr88-cm5 \
 UBOOT_VERSION=2026.01 \
 UBOOT_SHA256=b60d5865cefdbc75da8da4156c56c458e00de75a49b80c1a2e58a96e30ad0d54 \
-RPI_DTB_REF=stable_20250428 \
+RPI_DTB_REF=stable_20260724 \
 ./scripts/build-overlay.sh
 
 ./scripts/build-overlay.sh --help

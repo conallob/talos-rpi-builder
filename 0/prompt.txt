@@ -1,0 +1,195 @@
+I created the `v1.13.8 tag`, but the released failed with
+```
+==> Waiting for ghcr.io/conallob/rpi-talos:v1.13.8-k-rpi to be published...
+ERROR: timed out after 3600s waiting for ghcr.io/conallob/rpi-talos:v1.13.8-k-rpi
+This usually means build-kernel.yml/build-overlay.yml haven't finished yet (or failed) — check Actions.```
+
+Is there a race condition in the build workflow? `rpi-talos@v1.13.7-k-rpi` is the latest version under my packages
+
+---
+
+/login
+
+---
+
+What were those choices again?
+
+---
+
+LEt's do 2
+
+---
+
+```gh release view v1.13.8 --repo conallob/talos-rpi-builder
+HTTP 401: Bad credentials (https://api.github.com/repos/conallob/talos-rpi-builder/releases/tags/v1.13.8)
+Try authenticating with:  gh auth login -h github.com```
+
+---
+
+```gh release view v1.13.7 --repo conallob/talos-rpi-builder
+non-200 OK status code: 401 Unauthorized body: "{\r\n  \"message\": \"Bad credentials\",\r\n  \"documentation_url\": \"https://docs.github.com/rest\",\r\n  \"status\": \"401\"\r\n}"
+ conall@jazz  ~/Documents/GitHub/talos-rpi-builder   claude/talos-v1.13.8-release v1.13.8 ? ⍟1  gh release view v1.13.8 --repo conallob/talos-rpi-builder
+non-200 OK status code: 401 Unauthorized body: "{\r\n  \"message\": \"Bad credentials\",\r\n  \"documentation_url\": \"https://docs.github.com/rest\",\r\n  \"status\": \"401\"\r\n}"```
+
+---
+
+```env | grep -i -E 'GH_TOKEN|GITHUB_TOKEN'```
+
+---
+
+``` gh auth logout -h github.com
+✓ Logged out of github.com account conallob
+ conall@jazz  ~/Documents/GitHub/talos-rpi-builder   claude/talos-v1.13.8-release v1.13.8 ? ⍟1  gh auth login -h github.com
+? What is your preferred protocol for Git operations on this host? HTTPS
+? Authenticate Git with your GitHub credentials? Yes
+? How would you like to authenticate GitHub CLI? Login with a web browser
+
+! First copy your one-time code: 602C-BFF1
+Press Enter to open https://github.com/login/device in your browser...
+✓ Authentication complete.
+- gh config set -h github.com git_protocol https
+✓ Configured git protocol
+✓ Logged in as conallob
+ conall@jazz  ~/Documents/GitHub/talos-rpi-builder   claude/talos-v1.13.8-release v1.13.8 ? ⍟1  gh release view v1.13.7 --repo conallob/talos-rpi-builder
+non-200 OK status code: 401 Unauthorized body: "{\r\n  \"message\": \"Bad credentials\",\r\n  \"documentation_url\": \"https://docs.github.com/rest\",\r\n  \"status\": \"401\"\r\n}"
+ conall@jazz  ~/Documents/GitHub/talos-rpi-builder   claude/talos-v1.13.8-release v1.13.8 ? ⍟1  gh release view v1.13.8 --repo conallob/talos-rpi-builder
+HTTP 401: Bad credentials (https://api.github.com/repos/conallob/talos-rpi-builder/releases/tags/v1.13.8)
+Try authenticating with:  gh auth login -h github.com```
+
+---
+
+```type gh
+gh is an alias for op plugin run -- gh
+ conall@jazz  ~/Documents/GitHub/talos-rpi-builder   claude/talos-v1.13.8-release v1.13.8 ? ⍟1  alias gh
+gh='op plugin run -- gh'
+ conall@jazz  ~/Documents/GitHub/talos-rpi-builder   claude/talos-v1.13.8-release v1.13.8 ? ⍟1  op item list --categories "API Credential" | grep -i github
+p2mbmp7hyv3ifpl2w5ah2f3me4    Service Account Auth Token: GitHub Actions                    Automation            3 years ago
+mavk7x257fv7losgevm7gaas4e    Cloudflare Pages - Github Actions                             Automation            2 months ago
+6shzexklzugknjoxs43ox5neca    Service Account Auth Token: GitHub Actions                    Automation            2 years ago
+ewu4mvo4tadgi4b433c4fwe22m    Home-Assistant-Meadow-Close GitHub PAT                        Automation            3 months ago
+uflnum6vwoilm4j74fp43ft3ty    Github - Hassio-Addons Publish PAT                            Automation            2 months ago
+li5phrvkcnpde4a2xvu3gwwy3a    Tailscale GitHub Actions API Key                              Automation            2 years ago
+k6dgbwb42g7kizvwpidbzy6c4m    Github PAT - Claude Code                                      Automation            7 months ago
+bpkwpt4247immeb7miuhmirg5q    GitHub Personal Access Token - personio                       Private               3 years ago
+ip2re7kgtkdbh6uynvtm56hyc4    GitHub PAT - Terraform Package Reader                         Private               3 years ago
+ndab7xfgufjk44tluuputc7354    1Password Github Personal Access Token                        Private               1 year ago```
+
+---
+
+```op plugin inspect gh
+
+GitHub CLI
+
+Configured Aliases
+
+✘ Alias for "gh" not configured. Run 'op plugin init gh' to configure an alias.
+✔ Aliases sourced (/Users/conall/.config/op/plugins.sh)
+
+Configured Credentials
+
+✔ Configured for the current terminal session:
+CREDENTIAL TYPE                 ITEM                                      VAULT
+GitHub Personal Access Token    1Password Github Personal Access Token    Private```
+
+---
+
+```op plugin inspect gh
+
+GitHub CLI
+
+Configured Aliases
+
+✔ Alias for "gh" configured
+✔ Aliases sourced (/Users/conall/.config/op/plugins.sh)
+
+Configured Credentials
+
+✔ Configured for the current terminal session:
+CREDENTIAL TYPE                 ITEM                                      VAULT
+GitHub Personal Access Token    1Password Github Personal Access Token    Automation
+
+ conall@jazz  ~/Documents/GitHub/talos-rpi-builder   claude/talos-v1.13.8-release v1.13.8 ? ⍟1  gh release view v1.13.7 --repo conallob/talos-rpi-builder
+HTTP 401: Bad credentials (https://api.github.com/repos/conallob/talos-rpi-builder/releases/tags/v1.13.7)
+Try authenticating with:  gh auth login -h github.com
+ conall@jazz  ~/Documents/GitHub/talos-rpi-builder   claude/talos-v1.13.8-release v1.13.8 ? ⍟1  gh release view v1.13.8 --repo conallob/talos-rpi-builder
+HTTP 401: Bad credentials (https://api.github.com/repos/conallob/talos-rpi-builder/releases/tags/v1.13.8)
+Try authenticating with:  gh auth login -h github.com```
+
+Let's give up on using `gh` to trigger the release. Could I initiate it from the Github WebUI?
+
+---
+
+There was no `v1.13.8` release, but there was a `v1.13.8` tag, so I've removed it
+
+---
+
+```git log --oneline -5 origin/main
+477f971 (origin/main, origin/HEAD) Merge pull request #5 from conallob/claude/talos-v1.13.8-release
+ad30ca4 (tag: v1.13.8, origin/claude/talos-v1.13.8-release, claude/talos-v1.13.8-release) Drop netconsole from EXTRA_KERNEL_ARGS default — silent reboot loop on CM5
+d86c742 Bump to Talos v1.13.8
+a5b0779 (tag: v1.13.7) Merge branch 'claude/talos-v1.13.7-release'```
+
+---
+
+https://github.com/conallob/talos-rpi-builder/releases/tag/v1.13.8 now created
+
+---
+
+v1.13.8` is now flashed to an SD card and installed on the RPi5. The UART interface serial console output is in the `mcp-ssh-wingman` MCP server, including scrollback.
+
+At first glance, it looks like v1.13.8 is also stuck in a reboot loop
+
+---
+
+Done, output is in `mcp-ssh-wingman`
+
+---
+
+Done
+
+---
+
+<task-notification>
+<task-id>bp1l2d2f5</task-id>
+<summary>Monitor event: "Talos v1.13.8 release pipeline (build-kernel, build-overlay, publish)"</summary>
+<event>[Monitor timed out — re-arm if needed.]</event>
+</task-notification>
+
+---
+
+``` │setparams 'A - Talos v1.13.8-rpi'                                                                        │  │                                                                                                         │
+ │  set gfxmode=auto                                                                                       │  │  set gfxpayload=text                                                                                    │
+ │  linux /A/vmlinuz talos.platform=metal console=tty0 console=ttyAMA0,115200 console=ttyAMA10,115200 sysc\│  │tl.kernel.kexec_load_disabled=1 talos.dashboard.disabled=1 init_on_alloc=1 slab_nomerge pti=on consolebl\│
+ │ank=0 nvme_core.io_timeout=4294967295 printk.devkmsg=on selinux=1 module.sig_enforce=1 proc_mem.force_ov\│
+ │erride=never                                                                                             │
+ │  initrd /A/initramfs.xz                                                                                 │  │``` is the grub config
+
+---
+
+I don't know how to edit it, it looks like the grub editor is emacs-like
+
+---
+
+I keep editing it, but it keeps returning
+
+---
+
+Got to the Grub menu, let it count down and attempt to autoboot, only to crash again
+
+---
+
+Oh, UART is showing something new
+
+---
+
+RPi5 is now in it's expected reboot loop again
+
+---
+
+At this point, I suspect all the non standard branches for talos-rpi-builder are actually making things harder, not easier. Particularly since it appears we have run into a config issue which
+
+---
+
+At this point, I suspect all the non standard branches for talos-rpi-builder are actually making things harder, not easier. Particularly since it appears we have run into a config issue which should be trivial for factory.talos.dev to handle accordingly
+
+Have there been any new developments repated to RPi5 or CM5 support in Talos? Should I consider stock releases again, or possibly a factory.talos.dev image, with the appropriate cuatom configs applied

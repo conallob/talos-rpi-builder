@@ -1,0 +1,79 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "01M06JT0YX2N680CDR3H597D8Z",
+  "session_id": "0495b2d6-414d-410d-810d-303df12948e1",
+  "strategy": "manual-commit",
+  "created_at": "2026-08-17T00:44:10.705238Z",
+  "branch": "claude/rpi-dtb-ref-v0.2.1-rebase",
+  "checkpoints_count": 22,
+  "files_touched": [
+    ".github/workflows/build-overlay.yml",
+    "README.md",
+    "patches/dtb/0008-0001-Amend-the-RP1-ethernet-node-to-work-with-upstream-dr.patch",
+    "scripts/build-overlay.sh"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5",
+  "turn_id": "f7bc7022de05",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 9947,
+    "cache_creation_tokens": 725612,
+    "cache_read_tokens": 24468642,
+    "output_tokens": 66491,
+    "api_call_count": 201
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "prompt-skill-claude-code-login-2026-08-12T14:06:15.549613Z",
+      "event_type": "prompt_invocation",
+      "skill": {
+        "name": "login"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "prompt_slash_command",
+        "confidence": "explicit"
+      },
+      "turn_id": "c281f1b5ec51",
+      "timestamp": "2026-08-12T14:06:15.549613Z",
+      "native": {
+        "command": "/login"
+      },
+      "collapse": {
+        "target": "user_message",
+        "label": "/login",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 22
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-08-17T00:44:10.634759Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 47,
+    "human_removed": 23,
+    "total_committed": 0,
+    "total_lines_changed": 70,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 122,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/settings.json": 84,
+        ".claude/settings.local.json": 38
+      }
+    }
+  ]
+}

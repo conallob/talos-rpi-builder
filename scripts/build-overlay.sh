@@ -39,9 +39,9 @@ CHECKOUTS_DIR="${REPO_ROOT}/checkouts"
 UBOOT_VERSION="${UBOOT_VERSION:-2026.01}"
 UBOOT_SHA256="${UBOOT_SHA256:-b60d5865cefdbc75da8da4156c56c458e00de75a49b80c1a2e58a96e30ad0d54}"
 UBOOT_SHA512="${UBOOT_SHA512:-b1f988a497c77da60faf89ed33034e9ae58c4cd7f208e5ce451f1372e13540a66289bee4f08ca2f68f105d73f1ceae058b1f713db549edbcc885d9c66bdc4f8b}"
-RPI_DTB_REF="${RPI_DTB_REF:-stable_20250428}"
-RPI_DTB_SHA256="${RPI_DTB_SHA256:-c95906cfbc7808de5860c6d86537bea22e3501f600a5209de59a86cb436886f6}"
-RPI_DTB_SHA512="${RPI_DTB_SHA512:-0ed5d490c491e590b5980dccf6fcac0dd3c47accbfacd40d91507c12801cff34fa6a1c68991c8a6c57bb259c909121414766f35a0b11c4bd5d62c3e11d710839}"
+RPI_DTB_REF="${RPI_DTB_REF:-stable_20260724}"
+RPI_DTB_SHA256="${RPI_DTB_SHA256:-ed379d946780441248e5636a41d56fee11161f474025d4216a9fe037daef1b25}"
+RPI_DTB_SHA512="${RPI_DTB_SHA512:-b70147da8eae0a4f6b2f64ad0fc6ab1dd9a415de944646000defb7e8a418c5cba4d6a0727006721e536f0cd6f3c4959c4d921551b8eed8e3b49aab7f1f186d27}"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -122,6 +122,16 @@ perl -i -pe "s|https://github.com/raspberrypi/linux/archive/refs/tags/\{\{ \.ras
 echo ""
 echo "==> Injecting local DTB patches from ${REPO_ROOT}/patches/dtb..."
 mkdir -p artifacts/dtb/raspberrypi/patches
+# Delete sbc-raspberrypi's 0008: it would add mdio{} wrapper which breaks the
+# RPi vendor RP1 driver (expects flat phy@1 structure) — rpi_dtb_ref source
+# already has flat phy@N, no wrapper needed.
+rm -f artifacts/dtb/raspberrypi/patches/0008-*.patch
+# Our own 0008: rpi_dtb_ref's cm5.dtsi has the RP1 ethernet PHY at
+# ethernet-phy@0/reg=<0x0>, but the BCM54213PE on CM5 Rev 1.0 CMIO4 is
+# hardware-strapped to MDIO address 1 — restore phy@1/reg=<0x1> on top of
+# the otherwise-correct upstream node (pinctrl lines, &rp1_gpio interrupt-parent).
+cp -v "${REPO_ROOT}/patches/dtb/0008-0001-Amend-the-RP1-ethernet-node-to-work-with-upstream-dr.patch" \
+  artifacts/dtb/raspberrypi/patches/0008-0001-Amend-the-RP1-ethernet-node-to-work-with-upstream-dr.patch
 cp -v "${REPO_ROOT}/patches/dtb/0011-cm5-sdio1-drop-broken-cd.patch" \
   artifacts/dtb/raspberrypi/patches/0011-cm5-sdio1-drop-broken-cd.patch
 

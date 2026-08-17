@@ -1,0 +1,33 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "01M07QGNTF8RH5GG7SP0TQ7GYZ",
+  "strategy": "manual-commit",
+  "branch": "claude/overlay-pr88-cd6",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "Makefile"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 10011,
+    "cache_creation_tokens": 1502071,
+    "cache_read_tokens": 32693098,
+    "output_tokens": 79162,
+    "api_call_count": 233,
+    "subagent_tokens": {
+      "input_tokens": 1141,
+      "cache_creation_tokens": 153922,
+      "cache_read_tokens": 1189906,
+      "output_tokens": 16836,
+      "api_call_count": 28
+    }
+  }
+}

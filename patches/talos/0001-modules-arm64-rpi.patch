@@ -1,17 +1,17 @@
-From 8c8b8c34d416920979ea667147c8717ca916310c Mon Sep 17 00:00:00 2001
+From 575e39a2ce18d6d31f3179b18c5bc7e08c75a641 Mon Sep 17 00:00:00 2001
 From: local-build <local@build>
-Date: Thu, 3 Sep 2026 15:08:54 +0100
+Date: Fri, 4 Sep 2026 00:26:14 +0100
 Subject: [PATCH] Patched for Raspberry Pi 5
 
 ---
  hack/modules-arm64.txt | 387 ++++++++++-------------------------------
- 1 file changed, 93 insertions(+), 294 deletions(-)
+ 1 file changed, 92 insertions(+), 295 deletions(-)
 
 diff --git a/hack/modules-arm64.txt b/hack/modules-arm64.txt
-index 1cae2f1..42bf976 100644
+index 1cae2f1..39b11d7 100644
 --- a/hack/modules-arm64.txt
 +++ b/hack/modules-arm64.txt
-@@ -1,327 +1,126 @@
+@@ -1,327 +1,124 @@
 -kernel/arch/arm64/lib/xor-neon.ko
 +modules.builtin.bin
 +modules.builtin.modinfo
@@ -68,15 +68,14 @@ index 1cae2f1..42bf976 100644
 -kernel/drivers/gpu/drm/drm_suballoc_helper.ko
 +kernel/drivers/acpi/video.ko
  kernel/drivers/gpu/drm/drm_ttm_helper.ko
-+kernel/drivers/gpu/drm/ttm/ttm.ko
-+kernel/drivers/gpu/drm/tegra/tegra-drm.ko
- kernel/drivers/gpu/drm/drm_vram_helper.ko
- kernel/drivers/gpu/drm/hisilicon/hibmc/hibmc-drm.ko
+-kernel/drivers/gpu/drm/drm_vram_helper.ko
+-kernel/drivers/gpu/drm/hisilicon/hibmc/hibmc-drm.ko
 -kernel/drivers/gpu/drm/scheduler/gpu-sched.ko
 -kernel/drivers/gpu/drm/tegra/tegra-drm.ko
--kernel/drivers/gpu/drm/ttm/ttm.ko
+ kernel/drivers/gpu/drm/ttm/ttm.ko
 -kernel/drivers/gpu/drm/virtio/virtio-gpu.ko
-+kernel/drivers/gpu/drm/panfrost/panfrost.ko
++kernel/drivers/gpu/drm/tegra/tegra-drm.ko
++kernel/drivers/gpu/drm/drm_vram_helper.ko
  kernel/drivers/gpu/host1x/host1x.ko
 -kernel/drivers/hid/hid-a4tech.ko
 -kernel/drivers/hid/hid-apple.ko

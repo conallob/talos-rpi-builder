@@ -1,0 +1,772 @@
+PR merged, shall I create a new release?
+
+---
+
+```./scripts/release.sh v1.13.8
+============================================================
+ release.sh
+============================================================
+ Repo    : conallob/talos-rpi-builder
+ Tag     : v1.13.8
+ Target  : <default branch HEAD>
+ Draft   : no
+============================================================
+
+==> Creating release v1.13.8 (no assets — CI attaches them)
+https://github.com/conallob/talos-rpi-builder/releases/tag/v1.13.8
+
+==> Published. CI should be starting now:
+      https://github.com/conallob/talos-rpi-builder/actions```
+
+---
+
+Check status of the three in-progress GitHub Actions runs for the v1.13.8 release cut (build-kernel 32025201802, build-overlay 32025201493, publish 32025201251) on conallob/talos-rpi-builder, and report back to the user whether they succeeded, failed, or are still running.
+
+---
+
+Flashed onto an SD card and installed it in the RPi5. It's UART is now accessible via `mcp-ssh-wingman`
+
+---
+
+Ok, let's come back to this one more time.
+
+Talos v1.14.0 has just been released. Raspberry Pi 5 and CM5s both contunue to be annoying to run Talos on.
+
+Let's just switch to my backup plan of having 1x CM4 with WiFi + Bluetooth as the Control Plane Node and 6x CM4 as a nodepool for workers
+
+Then we can get the cluster built and continue to get RPi 5 or CM5 Control Plane nodes to run Talos
+
+---
+
+```git push -u origin claude/talos-v1.14.0-bump
+[entire] Pushing 2 checkpoint ref(s) to origin...... done
+Enumerating objects: 21, done.
+Counting objects: 100% (21/21), done.
+Delta compression using up to 12 threads
+Compressing objects: 100% (11/11), done.
+Writing objects: 100% (11/11), 3.01 KiB | 3.01 MiB/s, done.
+Total 11 (delta 8), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (8/8), completed with 8 local objects.
+remote:
+remote: Create a pull request for 'claude/talos-v1.14.0-bump' on GitHub by visiting:
+remote:      https://github.com/conallob/talos-rpi-builder/pull/new/claude/talos-v1.14.0-bump
+remote:
+To github.com:conallob/talos-rpi-builder.git
+ * [new branch]      claude/talos-v1.14.0-bump -> claude/talos-v1.14.0-bump
+branch 'claude/talos-v1.14.0-bump' set up to track 'origin/claude/talos-v1.14.0-bump'.```
+
+---
+
+PR merged
+
+---
+
+The `gh` CLI is reflusing to let me kick off the workflow via CLI. What are the steps for doing it via the Web?
+
+---
+
+https://github.com/conallob/talos-rpi-builder/actions/runs/33767201697 is now running
+
+---
+
+Workflow failed with build errors
+
+---
+
+```Run cd checkouts/talos
+make[1]: Entering directory '/home/runner/work/talos-rpi-builder/talos-rpi-builder/checkouts/talos'
+make[2]: Entering directory '/home/runner/work/talos-rpi-builder/talos-rpi-builder/checkouts/talos'
+#0 building with "builder-51ef9a16-1614-4045-96ba-727ac867a872" instance using docker-container driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 68.73kB done
+#1 DONE 0.0s
+
+#2 [auth] docker/dockerfile-upstream:pull token for registry-1.docker.io
+#2 DONE 0.0s
+
+#3 resolve image config for docker-image://docker.io/docker/dockerfile-upstream:1.26.0-labs
+#3 DONE 0.5s
+
+#4 docker-image://docker.io/docker/dockerfile-upstream:1.26.0-labs@sha256:63e440b412b6acba117974e793b7e7f702e58ee65e044bdff1b8d388ee0d853b
+#4 resolve docker.io/docker/dockerfile-upstream:1.26.0-labs@sha256:63e440b412b6acba117974e793b7e7f702e58ee65e044bdff1b8d388ee0d853b done
+#4 sha256:d206016c3b8f15ac5b3d2d5b7b8f0e137dcd2b99c4f2e463ed34bb04ff039639 13.01MB / 13.01MB 0.1s done
+#4 extracting sha256:d206016c3b8f15ac5b3d2d5b7b8f0e137dcd2b99c4f2e463ed34bb04ff039639 0.1s done
+#4 DONE 0.2s
+
+#5 [internal] load metadata for ghcr.io/siderolabs/ca-certificates:v1.14.0-15-g2f03590
+#5 ...
+
+#6 [auth] siderolabs/apparmor:pull token for ghcr.io
+#6 DONE 0.0s
+
+#7 [auth] siderolabs/dosfstools:pull token for ghcr.io
+#7 DONE 0.0s
+
+#8 [auth] siderolabs/nftables:pull token for ghcr.io
+#8 DONE 0.0s
+
+#9 [auth] siderolabs/systemd-udevd:pull token for ghcr.io
+
+#43 [auth] siderolabs/libmnl:pull token for ghcr.io
+#43 DONE 0.0s
+
+#44 [auth] siderolabs/cni:pull token for ghcr.io
+#44 DONE 0.0s
+
+#45 [auth] siderolabs/flannel-cni:pull token for ghcr.io
+#45 DONE 0.0s
+
+#46 [auth] siderolabs/libsepol:pull token for ghcr.io
+#46 DONE 0.0s
+
+#47 [auth] siderolabs/libarchive:pull token for ghcr.io
+#47 DONE 0.0s
+
+#48 [auth] siderolabs/pcre2:pull token for ghcr.io
+#48 DONE 0.0s
+
+#49 [auth] siderolabs/libburn:pull token for ghcr.io
+#49 DONE 0.0s
+
+#50 [auth] siderolabs/kmod:pull token for ghcr.io
+#50 DONE 0.0s
+
+#51 [auth] siderolabs/grub:pull token for ghcr.io
+#51 DONE 0.0s
+
+#52 [auth] siderolabs/libattr:pull token for ghcr.io
+#52 DONE 0.0s
+
+#53 [auth] siderolabs/glib:pull token for ghcr.io
+#53 DONE 0.0s
+
+#54 [auth] siderolabs/cpio:pull token for ghcr.io
+#54 DONE 0.0s
+
+#55 [auth] siderolabs/libisofs:pull token for ghcr.io
+#55 DONE 0.0s
+
+#56 [auth] siderolabs/liblzma:pull token for ghcr.io
+#56 DONE 0.0s
+
+#57 [auth] siderolabs/libcap:pull token for ghcr.io
+#57 DONE 0.0s
+
+#58 [auth] siderolabs/squashfs-tools:pull token for ghcr.io
+#58 DONE 0.0s
+
+#59 [auth] siderolabs/liburcu:pull token for ghcr.io
+#59 DONE 0.0s
+
+#60 [internal] load metadata for ghcr.io/siderolabs/flannel-cni:v1.14.0-15-g2f03590
+#60 ...
+
+#61 [internal] load metadata for ghcr.io/siderolabs/tar:v1.14.0-15-g2f03590
+#61 DONE 1.6s
+
+#62 [internal] load metadata for ghcr.io/siderolabs/xfsprogs:v1.14.0-15-g2f03590
+#62 DONE 1.6s
+
+#63 [internal] load metadata for ghcr.io/conallob/kernel-rpi:79dc190b12f9-0623e8f0
+#63 DONE 1.6s
+
+#64 [internal] load metadata for ghcr.io/siderolabs/systemd-udevd:v1.14.0-15-g2f03590
+#64 DONE 1.6s
+
+#65 [internal] load metadata for ghcr.io/siderolabs/libmnl:v1.14.0-15-g2f03590
+#65 DONE 1.6s
+
+#66 [internal] load metadata for ghcr.io/siderolabs/libisoburn:v1.14.0-15-g2f03590
+#66 DONE 1.6s
+
+#67 [internal] load metadata for ghcr.io/siderolabs/grub:v1.14.0-15-g2f03590
+#67 DONE 1.6s
+
+#68 [internal] load metadata for ghcr.io/siderolabs/grub:v1.14.0-15-g2f03590
+#68 DONE 1.7s
+
+#69 [internal] load metadata for ghcr.io/siderolabs/glib:v1.14.0-15-g2f03590
+#69 ...
+
+#70 [internal] load metadata for ghcr.io/siderolabs/libarchive:v1.14.0-15-g2f03590
+#70 DONE 1.7s
+
+#71 [internal] load metadata for ghcr.io/siderolabs/libaio:v1.14.0-15-g2f03590
+#71 DONE 1.7s
+
+#72 [internal] load metadata for ghcr.io/siderolabs/containerd:v1.14.0-15-g2f03590
+#72 DONE 1.7s
+
+#73 [internal] load metadata for ghcr.io/siderolabs/musl:v1.14.0-15-g2f03590
+#73 DONE 1.7s
+
+#74 [internal] load metadata for ghcr.io/siderolabs/libinih:v1.14.0-15-g2f03590
+#74 DONE 1.7s
+
+#75 [internal] load metadata for ghcr.io/siderolabs/mdadm-pkg:v1.14.0-15-g2f03590
+#75 DONE 1.7s
+
+#76 [internal] load metadata for ghcr.io/siderolabs/libisofs:v1.14.0-15-g2f03590
+#76 DONE 1.8s
+
+#77 [internal] load metadata for ghcr.io/siderolabs/openssl:v1.14.0-15-g2f03590
+#77 DONE 1.8s
+
+#78 [internal] load metadata for ghcr.io/siderolabs/tools:v1.14.0-5-g87316ca
+#78 DONE 1.8s
+
+#79 [internal] load metadata for ghcr.io/siderolabs/zstd:v1.14.0-15-g2f03590
+#79 DONE 1.8s
+
+#80 [internal] load metadata for ghcr.io/siderolabs/xz:v1.14.0-15-g2f03590
+#80 DONE 1.8s
+
+#81 [internal] load metadata for ghcr.io/siderolabs/runc:v1.14.0-15-g2f03590
+#81 DONE 1.8s
+
+#82 [internal] load metadata for ghcr.io/siderolabs/libjansson:v1.14.0-15-g2f03590
+#82 DONE 1.9s
+
+#83 [internal] load metadata for ghcr.io/siderolabs/kmod:v1.14.0-15-g2f03590
+#83 ...
+
+#60 [internal] load metadata for ghcr.io/siderolabs/flannel-cni:v1.14.0-15-g2f03590
+#60 DONE 1.9s
+
+#84 [internal] load metadata for ghcr.io/siderolabs/iptables:v1.14.0-15-g2f03590
+#84 DONE 1.9s
+
+#85 [internal] load metadata for ghcr.io/siderolabs/open-vmdk:v1.14.0-15-g2f03590
+#85 DONE 1.9s
+
+#86 [internal] load metadata for ghcr.io/siderolabs/mtools:v1.14.0-15-g2f03590
+#86 DONE 1.9s
+
+#87 [internal] load metadata for ghcr.io/siderolabs/qemu-tools:v1.14.0-15-g2f03590
+#87 DONE 2.0s
+
+#88 [internal] load metadata for ghcr.io/siderolabs/nftables:v1.14.0-15-g2f03590
+#88 DONE 2.0s
+
+#89 [internal] load metadata for ghcr.io/siderolabs/pigz:v1.14.0-15-g2f03590
+#89 DONE 2.0s
+
+#90 [internal] load metadata for ghcr.io/siderolabs/sd-boot:v1.14.0-15-g2f03590
+#90 DONE 2.0s
+
+#91 [internal] load metadata for ghcr.io/siderolabs/dosfstools:v1.14.0-15-g2f03590
+#91 DONE 2.0s
+
+#5 [internal] load metadata for ghcr.io/siderolabs/ca-certificates:v1.14.0-15-g2f03590
+#5 DONE 2.1s
+
+#92 [internal] load metadata for ghcr.io/siderolabs/zlib:v1.14.0-15-g2f03590
+#92 DONE 2.1s
+
+#93 [internal] load metadata for ghcr.io/siderolabs/libsepol:v1.14.0-15-g2f03590
+#93 DONE 2.1s
+
+#94 [internal] load metadata for ghcr.io/siderolabs/libburn:v1.14.0-15-g2f03590
+#94 DONE 2.1s
+
+#95 [internal] load metadata for ghcr.io/siderolabs/cni:v1.14.0-15-g2f03590
+#95 DONE 2.1s
+
+#96 [internal] load metadata for ghcr.io/siderolabs/libselinux:v1.14.0-15-g2f03590
+#96 DONE 2.2s
+
+#97 [internal] load metadata for ghcr.io/siderolabs/liblzma:v1.14.0-15-g2f03590
+#97 DONE 2.1s
+
+#98 [internal] load metadata for ghcr.io/siderolabs/liburcu:v1.14.0-15-g2f03590
+#98 DONE 2.2s
+
+#83 [internal] load metadata for ghcr.io/siderolabs/kmod:v1.14.0-15-g2f03590
+#83 DONE 2.2s
+
+#99 [internal] load metadata for ghcr.io/siderolabs/pcre2:v1.14.0-15-g2f03590
+#99 DONE 2.2s
+
+#100 [internal] load metadata for ghcr.io/siderolabs/libattr:v1.14.0-15-g2f03590
+#100 ...
+
+#69 [internal] load metadata for ghcr.io/siderolabs/glib:v1.14.0-15-g2f03590
+#69 DONE 2.2s
+
+#101 [internal] load metadata for ghcr.io/siderolabs/cryptsetup:v1.14.0-15-g2f03590
+#101 DONE 2.2s
+
+#102 [internal] load metadata for ghcr.io/siderolabs/fhs:v1.14.0-15-g2f03590
+#102 DONE 2.3s
+
+#103 [internal] load metadata for ghcr.io/siderolabs/libucontext:v1.14.0-15-g2f03590
+#103 DONE 2.3s
+
+#104 [internal] load metadata for ghcr.io/siderolabs/cpio:v1.14.0-15-g2f03590
+#104 DONE 2.3s
+
+#105 [internal] load metadata for ghcr.io/siderolabs/e2fsprogs:v1.14.0-15-g2f03590
+#105 DONE 2.3s
+
+#106 [internal] load metadata for ghcr.io/siderolabs/util-linux:v1.14.0-15-g2f03590
+#106 DONE 2.3s
+
+#107 [internal] load metadata for ghcr.io/siderolabs/lvm2:v1.14.0-15-g2f03590
+#107 DONE 2.4s
+
+#108 [internal] load metadata for ghcr.io/siderolabs/libnftnl:v1.14.0-15-g2f03590
+#108 DONE 2.4s
+
+#109 [internal] load metadata for ghcr.io/siderolabs/libjson-c:v1.14.0-15-g2f03590
+#109 DONE 2.4s
+
+#110 [internal] load metadata for ghcr.io/siderolabs/squashfs-tools:v1.14.0-15-g2f03590
+#110 DONE 2.4s
+
+#111 [internal] load metadata for ghcr.io/siderolabs/apparmor:v1.14.0-15-g2f03590
+#111 DONE 2.4s
+
+#112 [internal] load metadata for ghcr.io/siderolabs/libpopt:v1.14.0-15-g2f03590
+#112 DONE 2.4s
+
+#113 [internal] load metadata for ghcr.io/siderolabs/libcap:v1.14.0-15-g2f03590
+#113 DONE 2.4s
+
+#100 [internal] load metadata for ghcr.io/siderolabs/libattr:v1.14.0-15-g2f03590
+#100 DONE 2.4s
+
+#114 [internal] load .dockerignore
+#114 transferring context: 266B done
+#114 DONE 0.0s
+
+#115 [pkg-dosfstools-arm64 1/1] FROM ghcr.io/siderolabs/dosfstools:v1.14.0-15-g2f03590@sha256:3f6a793b793716ed84d8a03023585a2ef03f8a128ffcf5b9f0a72ace3371b05a
+#115 resolve ghcr.io/siderolabs/dosfstools:v1.14.0-15-g2f03590@sha256:3f6a793b793716ed84d8a03023585a2ef03f8a128ffcf5b9f0a72ace3371b05a 0.1s done
+#115 ...
+
+#116 [pkg-xz 1/1] FROM ghcr.io/siderolabs/xz:v1.14.0-15-g2f03590@sha256:f721f7c3bdd25b304f63ff9175d3bf735495b7b44836f10d07f3ae5edd506beb
+#116 resolve ghcr.io/siderolabs/xz:v1.14.0-15-g2f03590@sha256:f721f7c3bdd25b304f63ff9175d3bf735495b7b44836f10d07f3ae5edd506beb 0.1s done
+#116 DONE 0.2s
+
+#115 [pkg-dosfstools-arm64 1/1] FROM ghcr.io/siderolabs/dosfstools:v1.14.0-15-g2f03590@sha256:3f6a793b793716ed84d8a03023585a2ef03f8a128ffcf5b9f0a72ace3371b05a
+#115 sha256:3eeb404e8b004d5d26fc7d73760413fb4494dcc56f12abffb63df42cb4a2f44f 87.32kB / 87.32kB 0.1s done
+#115 extracting sha256:3eeb404e8b004d5d26fc7d73760413fb4494dcc56f12abffb63df42cb4a2f44f 0.0s done
+#115 DONE 0.3s
+
+#117 [pkg-sd-boot-arm64 1/1] FROM ghcr.io/siderolabs/sd-boot:v1.14.0-15-g2f03590@sha256:b18008c453500d893adc3711ed891b23c56fe21080251d49744095dcc73a9e48
+#117 resolve ghcr.io/siderolabs/sd-boot:v1.14.0-15-g2f03590@sha256:b18008c453500d893adc3711ed891b23c56fe21080251d49744095dcc73a9e48 0.1s done
+#117 sha256:d39d7fb385f611b3f8fe6fa814afbd75f8e54254ca09b04b0dd0e4a6cb1da061 144.48kB / 144.48kB 0.1s done
+#117 extracting sha256:d39d7fb385f611b3f8fe6fa814afbd75f8e54254ca09b04b0dd0e4a6cb1da061 done
+#117 DONE 0.3s
+
+#118 [pkg-libmnl-arm64 1/1] FROM ghcr.io/siderolabs/libmnl:v1.14.0-15-g2f03590@sha256:2114c745d6461ee4193d660d1270448833e21c6713f7bc8211bc4addb37bf49f
+#118 resolve ghcr.io/siderolabs/libmnl:v1.14.0-15-g2f03590@sha256:2114c745d6461ee4193d660d1270448833e21c6713f7bc8211bc4addb37bf49f 0.1s done
+#118 sha256:7a851fb959d739ab18a663d5cad0f764f11103c3b75a252e3f05f1f36de33ed5 14.08kB / 14.08kB 0.1s done
+#118 extracting sha256:7a851fb959d739ab18a663d5cad0f764f11103c3b75a252e3f05f1f36de33ed5 0.0s done
+#118 DONE 0.3s
+
+#119 [pkg-libburn 1/1] FROM ghcr.io/siderolabs/libburn:v1.14.0-15-g2f03590@sha256:74512b082b84d7bc33e4a45b02a840229a41c8cc80923094fb4e5499d5ab04a6
+#119 resolve ghcr.io/siderolabs/libburn:v1.14.0-15-g2f03590@sha256:74512b082b84d7bc33e4a45b02a840229a41c8cc80923094fb4e5499d5ab04a6 0.1s done
+#119 DONE 0.3s
+
+#120 [pkg-ca-certificates 1/1] FROM ghcr.io/siderolabs/ca-certificates:v1.14.0-15-g2f03590@sha256:86c00562b6df8c11250beeda0f4778bd70d8728f4b6f2b96e4c5052303881794
+#120 resolve ghcr.io/siderolabs/ca-certificates:v1.14.0-15-g2f03590@sha256:86c00562b6df8c11250beeda0f4778bd70d8728f4b6f2b96e4c5052303881794 0.1s done
+#120 DONE 0.3s
+
+#121 [pkg-libnftnl-arm64 1/1] FROM ghcr.io/siderolabs/libnftnl:v1.14.0-15-g2f03590@sha256:9fb86256221cd70edde7fbaf75cf7e460b7cf25fda8db1dd2eec1b24f0f17004
+#121 resolve ghcr.io/siderolabs/libnftnl:v1.14.0-15-g2f03590@sha256:9fb86256221cd70edde7fbaf75cf7e460b7cf25fda8db1dd2eec1b24f0f17004 0.1s done
+#121 ...
+
+#122 [pkg-libcap-arm64 1/1] FROM ghcr.io/siderolabs/libcap:v1.14.0-15-g2f03590@sha256:9baa82d1d96c2527a99ba4cef36f674e9665e55c22a622a4a487d6dff8d481fa
+#122 resolve ghcr.io/siderolabs/libcap:v1.14.0-15-g2f03590@sha256:9baa82d1d96c2527a99ba4cef36f674e9665e55c22a622a4a487d6dff8d481fa 0.1s done
+#122 sha256:19eed9fc15115e27bbc2ecf63b97ff9940b4f1a1a99e99cdc07b1812de81fd3f 54.60kB / 54.60kB 0.1s done
+#122 extracting sha256:19eed9fc15115e27bbc2ecf63b97ff9940b4f1a1a99e99cdc07b1812de81fd3f done
+#122 DONE 0.3s
+
+#123 [pkg-zstd-arm64 1/1] FROM ghcr.io/siderolabs/zstd:v1.14.0-15-g2f03590@sha256:11fa9df59731f3c78fa776c931fd44620b4951f043389418717edb841f7d7cd5
+#123 resolve ghcr.io/siderolabs/zstd:v1.14.0-15-g2f03590@sha256:11fa9df59731f3c78fa776c931fd44620b4951f043389418717edb841f7d7cd5 0.1s done
+#123 sha256:8d416db422d52b31655ab2ab4cb1bbb717984aec625a4c3046f1fb5f589ebfac 1.13MB / 1.13MB 0.1s done
+#123 extracting sha256:8d416db422d52b31655ab2ab4cb1bbb717984aec625a4c3046f1fb5f589ebfac 0.0s done
+#123 DONE 0.4s
+
+#124 [pkg-qemu-tools 1/1] FROM ghcr.io/siderolabs/qemu-tools:v1.14.0-15-g2f03590@sha256:a54a15feff6e817da6134189bca3f42e288d1be0819a0972a2d422cdf9e9f980
+#124 resolve ghcr.io/siderolabs/qemu-tools:v1.14.0-15-g2f03590@sha256:a54a15feff6e817da6134189bca3f42e288d1be0819a0972a2d422cdf9e9f980 0.1s done
+#124 sha256:03972aa980d9dddb44ac16fe6e8a40f313cdb59700ec6ca8d67c446e5bd93dc2 743.24kB / 743.24kB 0.1s done
+#124 extracting sha256:03972aa980d9dddb44ac16fe6e8a40f313cdb59700ec6ca8d67c446e5bd93dc2 0.0s done
+#124 DONE 0.5s
+
+#125 [pkg-kernel-arm64 1/1] FROM ghcr.io/conallob/kernel-rpi:79dc190b12f9-0623e8f0@sha256:5bc1a1b56642a57a65e03760462e3f1e0624078299e231cdcc588925439f5b8e
+#125 resolve ghcr.io/conallob/kernel-rpi:79dc190b12f9-0623e8f0@sha256:5bc1a1b56642a57a65e03760462e3f1e0624078299e231cdcc588925439f5b8e 0.1s done
+#125 sha256:84085d354eb08768626864f60c7387c35c64262fa6bb0d7efec97ccb4517f96a 10.49MB / 46.94MB 0.3s
+#125 sha256:84085d354eb08768626864f60c7387c35c64262fa6bb0d7efec97ccb4517f96a 25.17MB / 46.94MB 0.5s
+#125 ...
+
+#126 [pkg-xfsprogs-arm64 1/1] FROM ghcr.io/siderolabs/xfsprogs:v1.14.0-15-g2f03590@sha256:6f25bc94d2fe5c01c6721b7e508c349c885efea329af6a76a7124c752521294e
+#126 resolve ghcr.io/siderolabs/xfsprogs:v1.14.0-15-g2f03590@sha256:6f25bc94d2fe5c01c6721b7e508c349c885efea329af6a76a7124c752521294e 0.1s done
+#126 sha256:e98ecef237a100a2f7524b70a628800d00de5a550173e82318a0d62852299eea 2.71MB / 2.71MB 0.2s done
+#126 extracting sha256:e98ecef237a100a2f7524b70a628800d00de5a550173e82318a0d62852299eea 0.1s done
+#126 DONE 0.7s
+
+#127 [pkg-musl-arm64 1/1] FROM ghcr.io/siderolabs/musl:v1.14.0-15-g2f03590@sha256:8140be4d87243dda0398468e752d9ba6343dd9f4e164e891c66731cf85e67255
+#127 resolve ghcr.io/siderolabs/musl:v1.14.0-15-g2f03590@sha256:8140be4d87243dda0398468e752d9ba6343dd9f4e164e891c66731cf85e67255 0.1s done
+#127 sha256:33b923da359c6b95d098e3f83765ed165d4388eeb85b2f0192ee6103e38cc569 1.24MB / 1.24MB 0.2s done
+#127 extracting sha256:33b923da359c6b95d098e3f83765ed165d4388eeb85b2f0192ee6103e38cc569
+#127 extracting sha256:33b923da359c6b95d098e3f83765ed165d4388eeb85b2f0192ee6103e38cc569 0.2s done
+#127 DONE 1.0s
+
+#128 [pkg-pcre2-arm64 1/1] FROM ghcr.io/siderolabs/pcre2:v1.14.0-15-g2f03590@sha256:540455b2ebb4d078494c18ac141d073c67fc669ea523accdd132a9438e18ac45
+#128 resolve ghcr.io/siderolabs/pcre2:v1.14.0-15-g2f03590@sha256:540455b2ebb4d078494c18ac141d073c67fc669ea523accdd132a9438e18ac45 0.1s done
+#128 sha256:0929eba1b7e4182a21a730d3da1051beb5cdaab6f4ab05c8a33dffe63bc44573 370.07kB / 370.07kB 0.3s done
+#128 extracting sha256:0929eba1b7e4182a21a730d3da1051beb5cdaab6f4ab05c8a33dffe63bc44573 0.0s done
+#128 DONE 1.1s
+
+#125 [pkg-kernel-arm64 1/1] FROM ghcr.io/conallob/kernel-rpi:79dc190b12f9-0623e8f0@sha256:5bc1a1b56642a57a65e03760462e3f1e0624078299e231cdcc588925439f5b8e
+#125 sha256:84085d354eb08768626864f60c7387c35c64262fa6bb0d7efec97ccb4517f96a 46.94MB / 46.94MB 0.9s done
+#125 extracting sha256:84085d354eb08768626864f60c7387c35c64262fa6bb0d7efec97ccb4517f96a
+#125 ...
+
+#129 [internal] load build context
+#129 transferring context: 25.37MB 0.7s done
+#129 DONE 1.1s
+
+#130 [pkg-zlib-arm64 1/1] FROM ghcr.io/siderolabs/zlib:v1.14.0-15-g2f03590@sha256:9d3d2273f85280f7f772c7c6b3a95fecfc34f626bf95b1cbf947b424e1194a4b
+#130 resolve ghcr.io/siderolabs/zlib:v1.14.0-15-g2f03590@sha256:9d3d2273f85280f7f772c7c6b3a95fecfc34f626bf95b1cbf947b424e1194a4b 0.1s done
+#130 sha256:a313768d18c3d18ba6a386514118974b5f182c082282f201635966472a9a2801 187.95kB / 187.95kB 0.1s done
+#130 extracting sha256:a313768d18c3d18ba6a386514118974b5f182c082282f201635966472a9a2801 0.0s done
+#130 DONE 1.1s
+
+#131 [pkg-pigz-arm64 1/1] FROM ghcr.io/siderolabs/pigz:v1.14.0-15-g2f03590@sha256:15b17a7e0c155f5040cc24c013855f883ea26f6003ca6194be91f4b7a2043890
+#131 resolve ghcr.io/siderolabs/pigz:v1.14.0-15-g2f03590@sha256:15b17a7e0c155f5040cc24c013855f883ea26f6003ca6194be91f4b7a2043890 0.1s done
+#131 sha256:25c363d6ce654a2a1f01751ed325370a9f7b7c0eb26f10a12ad7dcb2521503e0 82.55kB / 82.55kB 0.1s done
+#131 extracting sha256:25c363d6ce654a2a1f01751ed325370a9f7b7c0eb26f10a12ad7dcb2521503e0 done
+#131 DONE 1.1s
+
+#116 [pkg-xz 1/1] FROM ghcr.io/siderolabs/xz:v1.14.0-15-g2f03590@sha256:f721f7c3bdd25b304f63ff9175d3bf735495b7b44836f10d07f3ae5edd506beb
+#116 sha256:7ff0f9c64e92dfa1c2218f42a025a689dcea04bca588d0b9ec79a16e861a9a1b 354.93kB / 354.93kB 0.2s done
+#116 extracting sha256:7ff0f9c64e92dfa1c2218f42a025a689dcea04bca588d0b9ec79a16e861a9a1b 0.0s done
+#116 DONE 1.2s
+
+#132 [pkg-squashfs-tools 1/1] FROM ghcr.io/siderolabs/squashfs-tools:v1.14.0-15-g2f03590@sha256:ffe9c49b6d50265fcb6e49b2f5f01eb6e00b50307340811369fe79ec941dd14b
+#132 resolve ghcr.io/siderolabs/squashfs-tools:v1.14.0-15-g2f03590@sha256:ffe9c49b6d50265fcb6e49b2f5f01eb6e00b50307340811369fe79ec941dd14b 0.1s done
+#132 sha256:6d14224bbdc0b70131c21165269b6e5e6c8bf41fd7f062e4e643de80c1ca5e5b 234.42kB / 234.42kB 0.1s done
+#132 extracting sha256:6d14224bbdc0b70131c21165269b6e5e6c8bf41fd7f062e4e643de80c1ca5e5b 0.0s done
+#132 DONE 1.2s
+
+#133 [pkg-util-linux-arm64 1/1] FROM ghcr.io/siderolabs/util-linux:v1.14.0-15-g2f03590@sha256:7a31ac9df0e88f75b5821a2597c3c5b3d274bb54e773af3dc1e0d33d5430c8de
+#133 resolve ghcr.io/siderolabs/util-linux:v1.14.0-15-g2f03590@sha256:7a31ac9df0e88f75b5821a2597c3c5b3d274bb54e773af3dc1e0d33d5430c8de 0.1s done
+#133 sha256:f16c112f1579b7d4c8d840499ef31e93264b0bc7afd2c3394296e43ba76827bc 1.13MB / 1.13MB 0.1s done
+#133 extracting sha256:f16c112f1579b7d4c8d840499ef31e93264b0bc7afd2c3394296e43ba76827bc 0.0s done
+#133 DONE 1.3s
+
+#134 [pkg-open-vmdk 1/1] FROM ghcr.io/siderolabs/open-vmdk:v1.14.0-15-g2f03590@sha256:12009662fd636cc303e3211321c11554cae79dd5e9cd7358733731bd67e35c8c
+#134 resolve ghcr.io/siderolabs/open-vmdk:v1.14.0-15-g2f03590@sha256:12009662fd636cc303e3211321c11554cae79dd5e9cd7358733731bd67e35c8c 0.1s done
+#134 sha256:1c73c371613110e60bd754dc13a7a9b107b2e97740ee12916a7dee5c7e4ab7b8 14.94kB / 14.94kB 0.1s done
+#134 extracting sha256:1c73c371613110e60bd754dc13a7a9b107b2e97740ee12916a7dee5c7e4ab7b8 done
+#134 DONE 1.3s
+
+#135 [pkg-containerd-arm64 1/1] FROM ghcr.io/siderolabs/containerd:v1.14.0-15-g2f03590@sha256:81f06dc22a364cd4be59b7ce9a62c80c946b085a0dddfa035d0041af21fe7063
+#135 resolve ghcr.io/siderolabs/containerd:v1.14.0-15-g2f03590@sha256:81f06dc22a364cd4be59b7ce9a62c80c946b085a0dddfa035d0041af21fe7063 0.1s done
+#135 sha256:67d68a170edac2280803609c0da515b668ef53553d5d9ded972935a5f932479c 23.48MB / 23.48MB 0.6s done
+#135 extracting sha256:67d68a170edac2280803609c0da515b668ef53553d5d9ded972935a5f932479c
+#135 ...
+
+#121 [pkg-libnftnl-arm64 1/1] FROM ghcr.io/siderolabs/libnftnl:v1.14.0-15-g2f03590@sha256:9fb86256221cd70edde7fbaf75cf7e460b7cf25fda8db1dd2eec1b24f0f17004
+#121 sha256:f14187319016e6968ed283d388a2fb30a5cac6e7054cc3cfeccd0fe00d26686b 100.82kB / 100.82kB 0.1s done
+#121 extracting sha256:f14187319016e6968ed283d388a2fb30a5cac6e7054cc3cfeccd0fe00d26686b done
+#121 DONE 1.3s
+
+#136 [pkg-libjson-c-arm64 1/1] FROM ghcr.io/siderolabs/libjson-c:v1.14.0-15-g2f03590@sha256:2e89c555a2d97a027b6f2ff22688e70efc108d91b1dc2160473bf58a411b1a97
+#136 resolve ghcr.io/siderolabs/libjson-c:v1.14.0-15-g2f03590@sha256:2e89c555a2d97a027b6f2ff22688e70efc108d91b1dc2160473bf58a411b1a97 0.1s done
+#136 sha256:ac07ae7cf21ddcf8d9ab1cc8cab48f7bdc9e2ef5602c6ce36994e1bbda5481ff 114.76kB / 114.76kB 0.1s done
+#136 extracting sha256:ac07ae7cf21ddcf8d9ab1cc8cab48f7bdc9e2ef5602c6ce36994e1bbda5481ff 0.0s done
+#136 DONE 1.4s
+
+#137 [pkg-tar 1/1] FROM ghcr.io/siderolabs/tar:v1.14.0-15-g2f03590@sha256:44e51d10ff7141115957a279108d68426bae78daff1212644f3606a07f064e23
+#137 resolve ghcr.io/siderolabs/tar:v1.14.0-15-g2f03590@sha256:44e51d10ff7141115957a279108d68426bae78daff1212644f3606a07f064e23 0.1s done
+#137 sha256:3a969bb64074aa54bf2848e52492a12c95e4dd54f39a853fa0846a678af72c94 289.77kB / 289.77kB 0.1s done
+#137 extracting sha256:3a969bb64074aa54bf2848e52492a12c95e4dd54f39a853fa0846a678af72c94 0.0s done
+#137 DONE 1.4s
+
+#135 [pkg-containerd-arm64 1/1] FROM ghcr.io/siderolabs/containerd:v1.14.0-15-g2f03590@sha256:81f06dc22a364cd4be59b7ce9a62c80c946b085a0dddfa035d0041af21fe7063
+#135 extracting sha256:67d68a170edac2280803609c0da515b668ef53553d5d9ded972935a5f932479c 0.4s done
+#135 DONE 1.4s
+
+#138 [pkg-libjansson-arm64 1/1] FROM ghcr.io/siderolabs/libjansson:v1.14.0-15-g2f03590@sha256:dff8f94e717c81f3141b3ecf4064e9f4d254db928f6c9de17938d69d31aeb8d4
+#138 resolve ghcr.io/siderolabs/libjansson:v1.14.0-15-g2f03590@sha256:dff8f94e717c81f3141b3ecf4064e9f4d254db928f6c9de17938d69d31aeb8d4 0.1s done
+#138 sha256:9034dc242b46d706145ac837aa2ea2b4717ccf8d9116cf5af3361cf8712e3caf 136.02kB / 136.02kB 0.1s done
+#138 extracting sha256:9034dc242b46d706145ac837aa2ea2b4717ccf8d9116cf5af3361cf8712e3caf 0.0s done
+#138 DONE 1.5s
+
+#139 [pkg-kmod-arm64 1/1] FROM ghcr.io/siderolabs/kmod:v1.14.0-15-g2f03590@sha256:9fe2005b1b6166401e19d074f57f02c8444219d7dd0f14fcb5f9b56fbcd2403b
+#139 resolve ghcr.io/siderolabs/kmod:v1.14.0-15-g2f03590@sha256:9fe2005b1b6166401e19d074f57f02c8444219d7dd0f14fcb5f9b56fbcd2403b 0.1s done
+#139 sha256:7bde05df96a79a60585ccf5a912999c321f4f63c15aac4c4749ce59f8359243d 137.79kB / 137.79kB 0.1s done
+#139 extracting sha256:7bde05df96a79a60585ccf5a912999c321f4f63c15aac4c4749ce59f8359243d 0.0s done
+#139 DONE 1.5s
+
+#140 [tools 1/1] FROM ghcr.io/siderolabs/tools:v1.14.0-5-g87316ca@sha256:7dd7d86b652694fe5bf8954759e3bf414ff486a30023267fd2e78ccb925fc2ca
+#140 resolve ghcr.io/siderolabs/tools:v1.14.0-5-g87316ca@sha256:7dd7d86b652694fe5bf8954759e3bf414ff486a30023267fd2e78ccb925fc2ca 0.1s done
+#140 sha256:4cd4243c0aee951fc17d57e61c28c4fa4182336aa4794ec776701566cfac65b9 73.40MB / 285.01MB 1.2s
+#140 ...
+
+#141 [pkg-openssl-arm64 1/1] FROM ghcr.io/siderolabs/openssl:v1.14.0-15-g2f03590@sha256:e69ee3532bb8162b496c4c39fcb6eb024ea7401105ae46a4e6a01a2550a19c24
+#141 resolve ghcr.io/siderolabs/openssl:v1.14.0-15-g2f03590@sha256:e69ee3532bb8162b496c4c39fcb6eb024ea7401105ae46a4e6a01a2550a19c24 0.1s done
+#141 sha256:39332374e329651a091a99baa02cb1697adf4df384e08268aefff04dfe3ef30a 6.42MB / 6.42MB 0.2s done
+#141 extracting sha256:39332374e329651a091a99baa02cb1697adf4df384e08268aefff04dfe3ef30a 0.1s done
+#141 DONE 1.5s
+
+#142 [pkg-libisoburn 1/1] FROM ghcr.io/siderolabs/libisoburn:v1.14.0-15-g2f03590@sha256:168b4713681b48e9e9e6be0e7f42efd9995a1649904ba94fb18e1891bc7a2f65
+#142 resolve ghcr.io/siderolabs/libisoburn:v1.14.0-15-g2f03590@sha256:168b4713681b48e9e9e6be0e7f42efd9995a1649904ba94fb18e1891bc7a2f65 0.1s done
+#142 sha256:108d37d671125006767cb995ca402579d79731a9e83d4effe09605b7445a67b1 1.20MB / 1.20MB 0.1s done
+#142 DONE 1.6s
+
+#140 [tools 1/1] FROM ghcr.io/siderolabs/tools:v1.14.0-5-g87316ca@sha256:7dd7d86b652694fe5bf8954759e3bf414ff486a30023267fd2e78ccb925fc2ca
+#140 ...
+
+#143 [pkg-libisofs 1/1] FROM ghcr.io/siderolabs/libisofs:v1.14.0-15-g2f03590@sha256:d2a67ef6b6df637b9579c605ab78f95abeaf3c58befd7b94d7b5cf3e688951e2
+#143 resolve ghcr.io/siderolabs/libisofs:v1.14.0-15-g2f03590@sha256:d2a67ef6b6df637b9579c605ab78f95abeaf3c58befd7b94d7b5cf3e688951e2 0.1s done
+#143 sha256:64797fa7267ca4521c8f1e80658d77c8491332478182e2eac42f2f9bf25201f1 653.05kB / 653.05kB 0.1s done
+#143 extracting sha256:64797fa7267ca4521c8f1e80658d77c8491332478182e2eac42f2f9bf25201f1 0.0s done
+#143 DONE 1.6s
+
+#144 [pkg-iptables-arm64 1/1] FROM ghcr.io/siderolabs/iptables:v1.14.0-15-g2f03590@sha256:3d43a5496da234aad7ecc73d3569f1f4934fad3b8857a34880d61eafda81e4ad
+#144 resolve ghcr.io/siderolabs/iptables:v1.14.0-15-g2f03590@sha256:3d43a5496da234aad7ecc73d3569f1f4934fad3b8857a34880d61eafda81e4ad 0.1s done
+#144 sha256:dfa3ecddca2c72d40be64ec0a68dd8c43e68121b37e16276caad5579426caf73 611.43kB / 611.43kB 0.1s done
+#144 extracting sha256:dfa3ecddca2c72d40be64ec0a68dd8c43e68121b37e16276caad5579426caf73 0.1s done
+#144 DONE 1.6s
+
+#142 [pkg-libisoburn 1/1] FROM ghcr.io/siderolabs/libisoburn:v1.14.0-15-g2f03590@sha256:168b4713681b48e9e9e6be0e7f42efd9995a1649904ba94fb18e1891bc7a2f65
+#142 extracting sha256:108d37d671125006767cb995ca402579d79731a9e83d4effe09605b7445a67b1 0.0s done
+#142 DONE 1.6s
+
+#145 [pkg-fhs 1/1] FROM ghcr.io/siderolabs/fhs:v1.14.0-15-g2f03590@sha256:aa038d38eab4c3787a86d3ada41efd90405bcc32d45d73289b70f2dab235a19f
+#145 resolve ghcr.io/siderolabs/fhs:v1.14.0-15-g2f03590@sha256:aa038d38eab4c3787a86d3ada41efd90405bcc32d45d73289b70f2dab235a19f 0.1s done
+#145 sha256:8e263c3d32d4d6360bce4667a91264c3cb2a5aebae981f35683a89e4a07ae26a 462B / 462B 0.1s done
+#145 extracting sha256:8e263c3d32d4d6360bce4667a91264c3cb2a5aebae981f35683a89e4a07ae26a done
+#145 DONE 1.7s
+
+#146 [pkg-nftables-arm64 1/1] FROM ghcr.io/siderolabs/nftables:v1.14.0-15-g2f03590@sha256:3f716b99358334189db7dde003452a73ede7961892c28586a501c942937b2797
+#146 resolve ghcr.io/siderolabs/nftables:v1.14.0-15-g2f03590@sha256:3f716b99358334189db7dde003452a73ede7961892c28586a501c942937b2797 0.1s done
+#146 sha256:0630199663c886fdcdd702e32930b0cb691c77d25d64b2b532523bcf5ff9b0b8 454.77kB / 454.77kB 0.1s done
+#146 DONE 1.7s
+
+#147 [rootfs-base-arm64  1/59] COPY --link --from=pkg-fhs / /rootfs
+#147 DONE 0.0s
+
+#140 [tools 1/1] FROM ghcr.io/siderolabs/tools:v1.14.0-5-g87316ca@sha256:7dd7d86b652694fe5bf8954759e3bf414ff486a30023267fd2e78ccb925fc2ca
+#140 ...
+
+#146 [pkg-nftables-arm64 1/1] FROM ghcr.io/siderolabs/nftables:v1.14.0-15-g2f03590@sha256:3f716b99358334189db7dde003452a73ede7961892c28586a501c942937b2797
+#146 extracting sha256:0630199663c886fdcdd702e32930b0cb691c77d25d64b2b532523bcf5ff9b0b8 0.0s done
+#146 DONE 1.7s
+
+#120 [pkg-ca-certificates 1/1] FROM ghcr.io/siderolabs/ca-certificates:v1.14.0-15-g2f03590@sha256:86c00562b6df8c11250beeda0f4778bd70d8728f4b6f2b96e4c5052303881794
+#120 sha256:5a9f6b499a05002bce6d5d825271ffe551f7e76de9d010a4faaeb102a0703426 108.43kB / 108.43kB 0.1s done
+#120 extracting sha256:5a9f6b499a05002bce6d5d825271ffe551f7e76de9d010a4faaeb102a0703426 done
+#120 DONE 1.8s
+
+#119 [pkg-libburn 1/1] FROM ghcr.io/siderolabs/libburn:v1.14.0-15-g2f03590@sha256:74512b082b84d7bc33e4a45b02a840229a41c8cc80923094fb4e5499d5ab04a6
+#119 sha256:c8e1bf78f79b0975ba25172aaca0923ff8ec4a02547ab7c850b606edd5f43fcd 510.36kB / 510.36kB 0.1s done
+#119 extracting sha256:c8e1bf78f79b0975ba25172aaca0923ff8ec4a02547ab7c850b606edd5f43fcd 0.0s done
+#119 DONE 1.8s
+
+#140 [tools 1/1] FROM ghcr.io/siderolabs/tools:v1.14.0-5-g87316ca@sha256:7dd7d86b652694fe5bf8954759e3bf414ff486a30023267fd2e78ccb925fc2ca
+#140 sha256:4cd4243c0aee951fc17d57e61c28c4fa4182336aa4794ec776701566cfac65b9 91.23MB / 285.01MB 1.5s
+#140 ...
+
+#148 [installer-base-image  2/12] COPY --link --from=pkg-ca-certificates / /
+#148 DONE 0.0s
+
+#149 [installer-base-image  3/12] COPY --link --exclude=**/*.a --exclude=**/*.la --exclude=usr/include --from=pkg-musl / /
+#149 DONE 0.0s
+
+#150 [installer-base-image  4/12] COPY --link --from=pkg-dosfstools / /
+#150 DONE 0.2s
+
+#151 [pkg-libaio-arm64 1/1] FROM ghcr.io/siderolabs/libaio:v1.14.0-15-g2f03590@sha256:6c597b22981a4e23713c58bd9d90f87ebb066c070a7b76c2755b62c060cd6fbe
+#151 resolve ghcr.io/siderolabs/libaio:v1.14.0-15-g2f03590@sha256:6c597b22981a4e23713c58bd9d90f87ebb066c070a7b76c2755b62c060cd6fbe 0.1s done
+#151 sha256:8c20ea02448b418947b82c9939a235888d5cb6fe0726c0fdc0a46b4e3fb0226f 9.14kB / 9.14kB 0.1s done
+#151 extracting sha256:8c20ea02448b418947b82c9939a235888d5cb6fe0726c0fdc0a46b4e3fb0226f done
+#151 DONE 1.9s
+
+#125 [pkg-kernel-arm64 1/1] FROM ghcr.io/conallob/kernel-rpi:79dc190b12f9-0623e8f0@sha256:5bc1a1b56642a57a65e03760462e3f1e0624078299e231cdcc588925439f5b8e
+#125 extracting sha256:84085d354eb08768626864f60c7387c35c64262fa6bb0d7efec97ccb4517f96a 0.9s done
+#125 DONE 1.9s
+
+#140 [tools 1/1] FROM ghcr.io/siderolabs/tools:v1.14.0-5-g87316ca@sha256:7dd7d86b652694fe5bf8954759e3bf414ff486a30023267fd2e78ccb925fc2ca
+#140 ...
+
+#152 [pkg-grub-arm64 1/1] FROM ghcr.io/siderolabs/grub:v1.14.0-15-g2f03590@sha256:39472eeb6c033ae258ad4ec11f066e7ab320b1fc3aa56cc612c02ea4e8476b85
+#152 resolve ghcr.io/siderolabs/grub:v1.14.0-15-g2f03590@sha256:39472eeb6c033ae258ad4ec11f066e7ab320b1fc3aa56cc612c02ea4e8476b85 0.1s done
+#152 sha256:a381dff2a3db3683766d993396ee52cfb03944a7ea8eedefd24750778cf28bbe 8.46MB / 8.46MB 0.2s done
+#152 extracting sha256:a381dff2a3db3683766d993396ee52cfb03944a7ea8eedefd24750778cf28bbe 0.2s done
+#152 DONE 1.9s
+
+#153 [depmod-arm64 3/4] COPY --link --from=pkg-kernel-arm64 /boot/System.map /staging/
+#153 ERROR: failed to calculate checksum of ref kqc4hnorvljc3zjk47jyfk5vd::dbi0jv6vhgdd7c34v3mvd6ztn: "/boot/System.map": not found
+
+#154 [depmod-arm64 1/4] WORKDIR /staging
+#154 CANCELED
+
+#155 [depmod-arm64 2/4] COPY --link --from=pkg-kernel-arm64 /usr/lib/modules usr/lib/modules
+#155 CANCELED
+
+#156 [pkg-runc-arm64 1/1] FROM ghcr.io/siderolabs/runc:v1.14.0-15-g2f03590@sha256:748adb4a791d573d747ca1913a6d2c915c4c54222238456d4485ab04b0e945c8
+#156 resolve ghcr.io/siderolabs/runc:v1.14.0-15-g2f03590@sha256:748adb4a791d573d747ca1913a6d2c915c4c54222238456d4485ab04b0e945c8 0.1s done
+#156 DONE 1.9s
+
+#157 [pkg-mdadm-arm64 1/1] FROM ghcr.io/siderolabs/mdadm-pkg:v1.14.0-15-g2f03590@sha256:9ea2d36faa8ad5cb273bf88695b5e12f13d5590b955597a189b164043ce5e696
+#157 resolve ghcr.io/siderolabs/mdadm-pkg:v1.14.0-15-g2f03590@sha256:9ea2d36faa8ad5cb273bf88695b5e12f13d5590b955597a189b164043ce5e696 0.1s done
+#157 sha256:a89040c6d61be322f7c9de6ed23ddca97cfbd92aeb25ce35b0179642c2d86c64 473.52kB / 473.52kB 0.2s done
+#157 extracting sha256:a89040c6d61be322f7c9de6ed23ddca97cfbd92aeb25ce35b0179642c2d86c64 0.0s done
+#157 DONE 1.9s
+
+#158 [pkg-libsepol-arm64 1/1] FROM ghcr.io/siderolabs/libsepol:v1.14.0-15-g2f03590@sha256:ffeaaaa3c18965a45c6fa558691121119556c7f66f92541ec25ffebdb2ee562b
+#158 resolve ghcr.io/siderolabs/libsepol:v1.14.0-15-g2f03590@sha256:ffeaaaa3c18965a45c6fa558691121119556c7f66f92541ec25ffebdb2ee562b 0.1s done
+#158 DONE 2.0s
+
+#159 [pkg-libucontext-arm64 1/1] FROM ghcr.io/siderolabs/libucontext:v1.14.0-15-g2f03590@sha256:07cc1c66e78aa9318f238feedab106c7bce2c2c64b59d8e86e29fd5ee49bd019
+#159 resolve ghcr.io/siderolabs/libucontext:v1.14.0-15-g2f03590@sha256:07cc1c66e78aa9318f238feedab106c7bce2c2c64b59d8e86e29fd5ee49bd019 0.1s done
+#159 DONE 2.0s
+
+#160 [pkg-libpopt-arm64 1/1] FROM ghcr.io/siderolabs/libpopt:v1.14.0-15-g2f03590@sha256:a68fe073d753fe71447f88c370f9950a4ce9a961b25ede655f70ed48594d3fb8
+#160 resolve ghcr.io/siderolabs/libpopt:v1.14.0-15-g2f03590@sha256:a68fe073d753fe71447f88c370f9950a4ce9a961b25ede655f70ed48594d3fb8 0.1s done
+#160 DONE 2.0s
+
+#161 [pkg-cryptsetup-arm64 1/1] FROM ghcr.io/siderolabs/cryptsetup:v1.14.0-15-g2f03590@sha256:2194581d1a8546b77fd6492178b1fddaa470eda837428ddc2b9545d9f83d4708
+#161 resolve ghcr.io/siderolabs/cryptsetup:v1.14.0-15-g2f03590@sha256:2194581d1a8546b77fd6492178b1fddaa470eda837428ddc2b9545d9f83d4708 0.1s done
+#161 DONE 1.9s
+
+#162 [pkg-flannel-cni-arm64 1/1] FROM ghcr.io/siderolabs/flannel-cni:v1.14.0-15-g2f03590@sha256:adcd300c946e5391feecb4b19c57855c190ed6d56a022bc52bedead8c13521c0
+#162 resolve ghcr.io/siderolabs/flannel-cni:v1.14.0-15-g2f03590@sha256:adcd300c946e5391feecb4b19c57855c190ed6d56a022bc52bedead8c13521c0 0.1s done
+#162 DONE 2.0s
+
+#163 [pkg-lvm2-arm64 1/1] FROM ghcr.io/siderolabs/lvm2:v1.14.0-15-g2f03590@sha256:388af2fdcfc170a772ef996fb52e806c549c79da21bf862188af58e9640b689a
+#163 resolve ghcr.io/siderolabs/lvm2:v1.14.0-15-g2f03590@sha256:388af2fdcfc170a772ef996fb52e806c549c79da21bf862188af58e9640b689a 0.1s done
+#163 sha256:f24aab7e5d33be75378e7a3bf3caa290a0f03ad3572df7ba0703ae3e10d7d060 0B / 6.18MB 0.1s
+#163 ...
+
+#164 [pkg-systemd-udevd-arm64 1/1] FROM ghcr.io/siderolabs/systemd-udevd:v1.14.0-15-g2f03590@sha256:337ab26b6c7657f68b5eecfad59503572fe0cd2e3c04d1caef1abaa6b3a8f10b
+#164 resolve ghcr.io/siderolabs/systemd-udevd:v1.14.0-15-g2f03590@sha256:337ab26b6c7657f68b5eecfad59503572fe0cd2e3c04d1caef1abaa6b3a8f10b 0.1s done
+#164 DONE 2.0s
+
+#165 [pkg-apparmor-arm64 1/1] FROM ghcr.io/siderolabs/apparmor:v1.14.0-15-g2f03590@sha256:8746cc26a01e99afc12d1d995246695ba3ae910a4aec9b256a93169f09ee62a3
+#165 resolve ghcr.io/siderolabs/apparmor:v1.14.0-15-g2f03590@sha256:8746cc26a01e99afc12d1d995246695ba3ae910a4aec9b256a93169f09ee62a3 0.1s done
+#165 DONE 2.0s
+
+#166 [rootfs-base-arm64 15/59] COPY --link --from=pkg-libattr-arm64 / /rootfs
+#166 CANCELED
+
+#167 [rootfs-base-arm64 10/59] COPY --link --from=pkg-systemd-udevd-arm64 /usr/share/spdx/systemd.spdx.json /rootfs/usr/share/spdx/systemd.spdx.json
+#167 CANCELED
+
+#168 [pkg-libselinux-arm64 1/1] FROM ghcr.io/siderolabs/libselinux:v1.14.0-15-g2f03590@sha256:f6b7d57c8fa863257c88c47229798c858dee9b92f41ec3e688f009b952a871c8
+#168 resolve ghcr.io/siderolabs/libselinux:v1.14.0-15-g2f03590@sha256:f6b7d57c8fa863257c88c47229798c858dee9b92f41ec3e688f009b952a871c8 0.1s done
+#168 sha256:71ce3abc0385edf677d9d0c0229efbb9b1f515f7518735f2ea13a0925ff34dd1 0B / 249.47kB 0.0s
+#168 ...
+
+#169 [pkg-cni-arm64 1/1] FROM ghcr.io/siderolabs/cni:v1.14.0-15-g2f03590@sha256:26996bc2177705932665b9fdbca8b8df9b23b4aa67aa4d851212a7d943e6cb4d
+#169 resolve ghcr.io/siderolabs/cni:v1.14.0-15-g2f03590@sha256:26996bc2177705932665b9fdbca8b8df9b23b4aa67aa4d851212a7d943e6cb4d 0.1s done
+#169 CACHED
+
+#170 [pkg-cni-stripped-arm64 6/6] COPY --link --from=pkg-cni-arm64 /usr/share/spdx/cni.spdx.json /usr/share/spdx/cni.spdx.json
+#170 CANCELED
+
+#171 [pkg-cni-stripped-arm64 5/6] COPY --link --from=pkg-cni-arm64 /opt/cni/bin/portmap /opt/cni/bin/portmap
+#171 CANCELED
+
+#172 [rootfs-base-arm64  8/59] COPY --link --from=pkg-e2fsprogs-arm64 / /rootfs
+#172 CANCELED
+
+#173 [rootfs-base-arm64  2/59] COPY --link --from=pkg-apparmor-arm64 / /rootfs
+#173 CANCELED
+
+#174 [selinux 1/1] RUN --mount=type=bind,source=internal/pkg/selinux/policy/selinux,target=/selinux     mkdir /policy; secilc -o /policy/policy.33 -f /policy/file_contexts -c 33 /selinux/**/*.cil -vvvvv -O
+#174 CANCELED
+
+#175 [pkg-libarchive-arm64 1/1] FROM ghcr.io/siderolabs/libarchive:v1.14.0-15-g2f03590@sha256:6b10acf620454d4e84412f69e7866683ae57c6a231bf3cdc8faf73f588dbe77d
+#175 resolve ghcr.io/siderolabs/libarchive:v1.14.0-15-g2f03590@sha256:6b10acf620454d4e84412f69e7866683ae57c6a231bf3cdc8faf73f588dbe77d 0.1s done
+#175 sha256:8b7457be3787c9da8f58ebc87f33301d1a6705f462094638834218811ebafdb1 982.07kB / 982.07kB 0.1s done
+#175 extracting sha256:8b7457be3787c9da8f58ebc87f33301d1a6705f462094638834218811ebafdb1 0.0s done
+#175 DONE 2.0s
+
+#176 [pkg-libattr-arm64 1/1] FROM ghcr.io/siderolabs/libattr:v1.14.0-15-g2f03590@sha256:d442f504dee78a72b369fcb42e3d0ee21bc7a4f5192e7795776730bc82b9e3ea
+#176 resolve ghcr.io/siderolabs/libattr:v1.14.0-15-g2f03590@sha256:d442f504dee78a72b369fcb42e3d0ee21bc7a4f5192e7795776730bc82b9e3ea 0.1s done
+#176 DONE 2.0s
+
+#140 [tools 1/1] FROM ghcr.io/siderolabs/tools:v1.14.0-5-g87316ca@sha256:7dd7d86b652694fe5bf8954759e3bf414ff486a30023267fd2e78ccb925fc2ca
+#140 DONE 2.3s
+
+#177 [pkg-grub-amd64 1/1] FROM ghcr.io/siderolabs/grub:v1.14.0-15-g2f03590@sha256:39472eeb6c033ae258ad4ec11f066e7ab320b1fc3aa56cc612c02ea4e8476b85
+#177 resolve ghcr.io/siderolabs/grub:v1.14.0-15-g2f03590@sha256:39472eeb6c033ae258ad4ec11f066e7ab320b1fc3aa56cc612c02ea4e8476b85 0.1s done
+#177 sha256:c2773df4436b515c2b35439f58fb674db2d4d6a509f1f36b016ab17086d68911 0B / 10.07MB 0.0s
+#177 ...
+
+#178 [pkg-cpio 1/1] FROM ghcr.io/siderolabs/cpio:v1.14.0-15-g2f03590@sha256:b87e48517a8b30ab1ef7d191c45abf0a44aa004a5eff5c71e3e8b5868f86ce47
+#178 resolve ghcr.io/siderolabs/cpio:v1.14.0-15-g2f03590@sha256:b87e48517a8b30ab1ef7d191c45abf0a44aa004a5eff5c71e3e8b5868f86ce47 0.1s done
+#178 sha256:3a00b54f4dca92ca495a178b2419a0fbcd7780bb0db2ae636b87f76423023e4f 0B / 109.07kB
+#178 ...
+
+#179 [pkg-libinih-arm64 1/1] FROM ghcr.io/siderolabs/libinih:v1.14.0-15-g2f03590@sha256:bdb444cd4de2c8cf40f22a49a006893a93259a6db4035809399481622f4071c9
+#179 resolve ghcr.io/siderolabs/libinih:v1.14.0-15-g2f03590@sha256:bdb444cd4de2c8cf40f22a49a006893a93259a6db4035809399481622f4071c9 0.1s done
+#179 sha256:356901313fa321f73fb07636804d0d50a37ab3c9a2fa45b4a6ea6a0794d2c1bf 0B / 8.29kB
+#179 ...
+
+#180 [pkg-liblzma 1/1] FROM ghcr.io/siderolabs/liblzma:v1.14.0-15-g2f03590@sha256:49a26433b0d7214750e24063da268553fcb25ae22eec372e1226d994552edb67
+#180 resolve ghcr.io/siderolabs/liblzma:v1.14.0-15-g2f03590@sha256:49a26433b0d7214750e24063da268553fcb25ae22eec372e1226d994552edb67 0.1s done
+#180 sha256:73f9c8a897c2662f723071ff846033cd5b726771b3052d3ac5aa81dc7a747469 0B / 161.06kB
+#180 ...
+
+#181 [pkg-mtools 1/1] FROM ghcr.io/siderolabs/mtools:v1.14.0-15-g2f03590@sha256:f45317e753c05eb720390de05fbf24242fecd02def453dddb796bb194b2122f9
+#181 resolve ghcr.io/siderolabs/mtools:v1.14.0-15-g2f03590@sha256:f45317e753c05eb720390de05fbf24242fecd02def453dddb796bb194b2122f9 0.1s done
+#181 sha256:8c7f2f1d61467af68f99e77e064d823371f1d46624b3efe3e6c5ebb627b99efd 0B / 98.19kB
+#181 ...
+
+#182 [pkg-glib 1/1] FROM ghcr.io/siderolabs/glib:v1.14.0-15-g2f03590@sha256:b6af63302467b7dc8179dd2e59709e1643341162cd87c0fa453854a50d036dfd
+#182 resolve ghcr.io/siderolabs/glib:v1.14.0-15-g2f03590@sha256:b6af63302467b7dc8179dd2e59709e1643341162cd87c0fa453854a50d036dfd 0.1s done
+#182 sha256:a324e4cccaeab84ebf2a5597768272dd7613ee3e787c15011a16f9476e82b0bb 0B / 2.03MB
+#182 ...
+
+#183 [pkg-e2fsprogs-arm64 1/1] FROM ghcr.io/siderolabs/e2fsprogs:v1.14.0-15-g2f03590@sha256:e619a7e6cf31ebe242cdd830a5b8f77bfa8a8d802ec26c5c984d7d1b6c5e8c24
+#183 resolve ghcr.io/siderolabs/e2fsprogs:v1.14.0-15-g2f03590@sha256:e619a7e6cf31ebe242cdd830a5b8f77bfa8a8d802ec26c5c984d7d1b6c5e8c24 0.1s done
+#183 sha256:5681f82aef8d12233fd2bd0c3c4d2ef616af2542113ee2a305a930fef22dbece 0B / 873.16kB
+#183 ...
+
+#184 [pkg-liburcu-arm64 1/1] FROM ghcr.io/siderolabs/liburcu:v1.14.0-15-g2f03590@sha256:e5171e695e9f0396e86025153558d46c315da460f1d5d423887e3d71dea5e7f7
+#184 resolve ghcr.io/siderolabs/liburcu:v1.14.0-15-g2f03590@sha256:e5171e695e9f0396e86025153558d46c315da460f1d5d423887e3d71dea5e7f7 0.1s done
+#184 DONE 2.3s
+
+#185 [installer-base-image  8/12] COPY --link --exclude=**/*.a --exclude=**/*.la  --exclude=usr/include --exclude=usr/lib/pkgconfig --from=pkg-liblzma / /
+#185 CANCELED
+
+#186 [imager-image  1/24] COPY --link --from=pkg-cpio / /
+#186 CANCELED
+
+#187 [imager-image  3/24] COPY --link --exclude=**/*.a --exclude=**/*.la --exclude=usr/include --exclude=usr/lib/pkgconfig --from=pkg-glib / /
+#187 CANCELED
+
+#188 [installer-base-image 10/12] COPY --link --from=pkg-mtools / /
+#188 CANCELED
+
+#189 [installer-base-image  9/12] COPY --link --exclude=**/*.a --exclude=**/*.la  --exclude=usr/include --exclude=usr/lib/pkgconfig --from=pkg-liburcu / /
+#189 CANCELED
+
+#190 [embed-generate 1/2] WORKDIR /src
+#190 CANCELED
+------
+ > [depmod-arm64 3/4] COPY --link --from=pkg-kernel-arm64 /boot/System.map /staging/:
+------
+Dockerfile:727
+--------------------
+ 725 |     WORKDIR /staging
+ 726 |     COPY --link --from=pkg-kernel-arm64 /usr/lib/modules usr/lib/modules
+ 727 | >>> COPY --link --from=pkg-kernel-arm64 /boot/System.map /staging/
+ 728 |     RUN --mount=type=bind,source=hack/modules-arm64.txt,target=/staging/modules-arm64.txt <<EOF
+ 729 |     set -euo pipefail
+--------------------
+ERROR: failed to build: failed to solve: failed to compute cache key: failed to calculate checksum of ref kqc4hnorvljc3zjk47jyfk5vd::dbi0jv6vhgdd7c34v3mvd6ztn: "/boot/System.map": not found
+make[2]: *** [Makefile:326: target-imager] Error 1
+make[2]: Leaving directory '/home/runner/work/talos-rpi-builder/talos-rpi-builder/checkouts/talos'
+make[1]: *** [Makefile:343: registry-imager] Error 2
+make[1]: Leaving directory '/home/runner/work/talos-rpi-builder/talos-rpi-builder/checkouts/talos'
+make: *** [Makefile:383: imager] Error 2
+Error: Process completed with exit code 2.```

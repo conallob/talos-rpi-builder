@@ -1,20 +1,13 @@
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From e0691316de1426088083bd5744bb8eba1948bcd9 Mon Sep 17 00:00:00 2001
 From: local-build <local@build>
 Date: Sun, 10 May 2026 12:00:00 +0000
 Subject: [PATCH] Patched for Raspberry Pi 5
 
-Switch kernel source from upstream stable to raspberrypi/linux rpi-6.18.y
-at commit 79dc190b12f9.
-
-The Pi-tuned kernel/build/config-arm64 is shipped as a standalone file
-(patches/pkgs/config-arm64-rpi) and copied into place by the workflow,
-so it is not part of this patch.
-
-Anchored on siderolabs/pkgs v1.13.0.
 ---
  Pkgfile                 | 8 ++++----
+ kernel/kernel/pkg.yaml  | 4 +++-
  kernel/prepare/pkg.yaml | 6 +++---
- 2 files changed, 7 insertions(+), 7 deletions(-)
+ 3 files changed, 10 insertions(+), 8 deletions(-)
 
 diff --git a/Pkgfile b/Pkgfile
 index a272582..1944a44 100644
@@ -23,7 +16,7 @@ index a272582..1944a44 100644
 @@ -97,10 +97,10 @@ vars:
    kspp_sha256: 640b25473f86557d082f680b0f57653a69f4146e97825673bf582f9a4c8b7739
    kspp_sha512: 82dae1debbe94a3f82766a8cdbfe59ff8698d433175803458499b76c50b47b89e9280b677a9f16b2a44711badd6f4001aba951a41722a74dd51c03a18b8b9219
-
+ 
 -  # renovate: datasource=git-tags extractVersion=^v(?<version>.*)$ depName=git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
 -  linux_version: 6.18.24
 -  linux_sha256: c207c557ce58103b4dda30e26da5203f3d8467c6dadc53d709f6d83ae1d1255f
@@ -32,9 +25,26 @@ index a272582..1944a44 100644
 +  linux_version: 79dc190b12f9
 +  linux_sha256: 808f20a634b303562fdb73b7fcb7b11b1d7393d252fa8e1404bb572511743021
 +  linux_sha512: c63cc5b6d0655c1d3b8706c97d768556897187295c4dcd36ade85a175873e8e0bac87bd3938bf74dafc3ed4b5d1fd91c44cdcc3a6d4b687c2ef650c74ddf67be
-
+ 
    # renovate: datasource=git-tags extractVersion=^libaio-(?<version>.*)$ depName=https://pagure.io/libaio.git
    libaio_version: 0.3.113
+diff --git a/kernel/kernel/pkg.yaml b/kernel/kernel/pkg.yaml
+index 1692dd3..f2a8e5e 100644
+--- a/kernel/kernel/pkg.yaml
++++ b/kernel/kernel/pkg.yaml
+@@ -35,9 +35,11 @@ steps:
+             ;;
+         esac
+ 
++        cp System.map /rootfs/boot/System.map
++
+         export KERNELRELEASE=$(cat include/config/kernel.release)
+         make -j $(nproc) modules_install INSTALL_MOD_PATH=/rootfs/usr INSTALL_MOD_STRIP=1
+-        depmod -b /rootfs/usr $KERNELRELEASE
++        depmod -b /rootfs/usr -F /rootfs/boot/System.map --errsyms -w $KERNELRELEASE
+         unlink /rootfs/usr/lib/modules/$KERNELRELEASE/build
+     sbom:
+       outputPath: /rootfs/usr/share/spdx/kernel.spdx.json
 diff --git a/kernel/prepare/pkg.yaml b/kernel/prepare/pkg.yaml
 index 6c6e61d..27c599b 100644
 --- a/kernel/prepare/pkg.yaml
@@ -56,9 +66,9 @@ index 6c6e61d..27c599b 100644
          mkdir -p /src
 -        tar -xJf linux.tar.xz --strip-components=1 -C /src
 +        tar -xzf linux.tar.gz --strip-components=1 -C /src
-
+ 
          cd /src
          make mrproper
---
-2.53.0
+-- 
+2.50.1 (Apple Git-155)
 

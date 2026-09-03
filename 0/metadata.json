@@ -1,0 +1,52 @@
+{
+  "cli_version": "0.10.3",
+  "checkpoint_id": "01M1KSVS3H2RJTMHRQ4G30G3PH",
+  "session_id": "0495b2d6-414d-410d-810d-303df12948e1",
+  "strategy": "manual-commit",
+  "created_at": "2026-09-03T14:13:18.897574Z",
+  "branch": "claude/talos-v1.14.0-bump",
+  "checkpoints_count": 1,
+  "files_touched": [
+    ".github/workflows/build-kernel.yml",
+    ".github/workflows/publish.yml",
+    "Makefile",
+    "README.md"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5",
+  "turn_id": "1988e1f87dd3",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 10155,
+    "cache_creation_tokens": 2209928,
+    "cache_read_tokens": 53683496,
+    "output_tokens": 105285,
+    "api_call_count": 305
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-09-03T14:13:18.756974Z",
+    "agent_lines": 25,
+    "agent_removed": 25,
+    "human_added": 97,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 122,
+    "total_lines_changed": 165,
+    "agent_percentage": 30.303030303030305,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 128,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.json": 84,
+        ".claude/settings.local.json": 43
+      }
+    }
+  ]
+}

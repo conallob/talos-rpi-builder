@@ -1,0 +1,29 @@
+{
+  "cli_version": "0.10.3",
+  "checkpoint_id": "01M1KSVS3H2RJTMHRQ4G30G3PH",
+  "strategy": "manual-commit",
+  "branch": "claude/talos-v1.14.0-bump",
+  "checkpoints_count": 1,
+  "files_touched": [
+    ".github/workflows/build-kernel.yml",
+    ".github/workflows/publish.yml",
+    "Makefile",
+    "README.md"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 10155,
+    "cache_creation_tokens": 2209928,
+    "cache_read_tokens": 53683496,
+    "output_tokens": 105285,
+    "api_call_count": 305
+  }
+}
